@@ -1,66 +1,27 @@
-import { useState } from "react";
-import { Amplify } from "@aws-amplify/core";
-import { Auth } from "@aws-amplify/auth";
-import awsExports from "../aws/awsExports";
+import { useEffect } from "react";
+import { useAtom } from "jotai";
+import { userAtom } from "./_app";
+import Loading from "../components/Loading";
 
-Amplify.configure({
-  Auth: awsExports,
-});
+const Home = () => {
+  const [user, setUser] = useAtom(userAtom);
 
-const CustomSignIn = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    code: "",
-  });
-  const handleInputChange = (e) => {
-    const { value, dataset } = e.target;
-    const { prop } = dataset;
-    setFormData({
-      ...formData,
-      [prop]: value,
-    });
-  };
-  const signInClick = async () => {
-    try {
-      const user = await Auth.signIn(formData.username, formData.password);
-      console.log({ user });
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+  useEffect(() => {
+    console.log("Home.js - User: ", user);
+  }, []);
+
+  if (!user || !user.username) {
+    return <Loading />;
+  }
+
   return (
     <div>
-      <form>
-        <div>
-          <label htmlFor="username"> Username</label>
-          <input
-            data-prop={"username"}
-            onChange={handleInputChange}
-            type="text"
-            placeholder="Username"
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            data-prop={"password"}
-            onChange={handleInputChange}
-            type="password"
-            placeholder="******************"
-          />
-        </div>
-        <div>
-          <button type="button" onClick={() => signInClick()}>
-            Login
-          </button>
-          <p>
-            <a onClick={() => Auth.federatedSignIn()}> Create account</a>
-          </p>
-        </div>
-      </form>
+      Hello, {user.username}
+      <div>
+        <button className="bg-red-500">Logout</button>
+      </div>
     </div>
   );
 };
 
-export default CustomSignIn;
+export default Home;
