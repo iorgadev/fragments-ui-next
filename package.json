@@ -19,6 +19,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^1.0.6",
     "aws-amplify": "^4.3.12",
     "jotai": "^1.6.1",
     "next": "12.0.8",
