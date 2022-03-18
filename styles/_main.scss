@@ -1,0 +1,26 @@
+.main {
+  @apply w-screen h-screen;
+  @apply flex;
+  @apply p-3;
+
+  &__left {
+    @apply flex-1;
+    @apply flex flex-col;
+    @apply border-r border-green-400;
+  }
+
+  &__right {
+    @apply flex-1;
+    // @apply border-l border-red-400;
+    @apply flex items-center justify-center;
+  }
+}
+
+.fragments {
+  @apply w-full flex-1;
+  @apply border border-red-400;
+
+  &__container {
+    @apply grid grid-cols-5;
+  }
+}
