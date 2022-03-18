@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Amplify } from "@aws-amplify/core";
 import { Auth } from "@aws-amplify/auth";
 import awsExports from "../aws/awsExports";
@@ -18,6 +18,7 @@ const CustomSignIn = () => {
     password: "",
     code: "",
   });
+
   const handleInputChange = (e) => {
     const { value, dataset } = e.target;
     const { prop } = dataset;
@@ -26,6 +27,7 @@ const CustomSignIn = () => {
       [prop]: value,
     });
   };
+
   const signInClick = async () => {
     try {
       const userResponse = await Auth.signIn(
@@ -33,12 +35,44 @@ const CustomSignIn = () => {
         formData.password
       );
       if (userResponse) {
+        document.cookie = `accessToken=${userResponse.signInUserSession.idToken.jwtToken};max-age=604800;`;
         setUser((prevUser) => (prevUser = userResponse));
       }
     } catch (error) {
       console.log(error.message);
     }
   };
+
+  const getUser = async () => {
+    try {
+      const userResponse = await Auth.currentAuthenticatedUser();
+      if (userResponse) {
+        document.cookie = `accessToken=${userResponse.signInUserSession.idToken.jwtToken};max-age=604800;`;
+        setUser((prevUser) => (prevUser = userResponse));
+        return userResponse;
+      }
+      setUser((prevUser) => (prevUser = null));
+    } catch (error) {
+      console.log(error.message);
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    let accessToken = document.cookie.replace(
+      /(?:(?:^|.*;\s*)accessToken\s*\=\s*([^;]*).*$)|^.*$/,
+      "$1"
+    );
+    // console.log("accessToken: ", accessToken);
+    let userResponse = getUser();
+    if (accessToken.length > 0 && userResponse) {
+      console.log("getUser(): ", user);
+    } else {
+      console.log("User needs to login.");
+      setUser({});
+    }
+  }, []);
+
   return (
     <div>
       <form>
