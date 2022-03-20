@@ -12,22 +12,22 @@ const Home = () => {
   }
 
   const handleLogout = () => {
+    Auth.signOut();
     document.cookie = "accessToken=;";
     setUser((prevUser) => (prevUser = {}));
-    Auth.signOut();
   };
 
   return (
     <div className="main">
-      <div className="main__left">
-        <Fragments />
-        <div className="flex-grow">fragment data</div>
-      </div>
-      <div className="main__right">
+      {/* <div className="main__left"> */}
+      <Fragments />
+      {/* <div className="flex-grow"><span>fragment data</span></div> */}
+      {/* </div> */}
+      {/* <div className="main__right">
         <button className="bg-red-500" onClick={handleLogout}>
           Logout
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
