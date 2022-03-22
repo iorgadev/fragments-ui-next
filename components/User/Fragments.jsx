@@ -1,9 +1,32 @@
 import { useEffect, useState } from "react";
 import { useAtom, atom } from "jotai";
-import { userAtom } from "../../pages/_app";
-import InfoIconBig from "../Fragment/InfoIconBig";
+import { userAtom, selectedFragmentAtom } from "../../pages/_app";
+import InfoIconBig from "@/components/Fragment/InfoIconBig";
+import BigCard from "@/components/Fragment/BigCard";
+import Menu from "../Menu";
 
-import { RefreshIcon, PlusIcon } from "@heroicons/react/outline";
+import {
+  getLargestFragment,
+  humanFileSize,
+  getTotalSize,
+} from "../../utils/fragmentUtils";
+
+import {
+  RefreshIcon,
+  PlusIcon,
+  CubeTransparentIcon,
+  ChevronDownIcon,
+  DocumentSearchIcon,
+  SortAscendingIcon,
+  SortDescendingIcon,
+} from "@heroicons/react/solid";
+import {
+  CubeIcon,
+  ViewGridAddIcon,
+  ChartPieIcon,
+  ArrowsExpandIcon,
+  UserIcon,
+} from "@heroicons/react/outline";
 
 export const userFragmentsAtom = atom([]);
 
@@ -12,7 +35,8 @@ function Fragments() {
   const [fragments, setFragments] = useAtom(userFragmentsAtom);
   const [compFragments, setCompFragments] = useState([]);
   const [loading, setLoading] = useState(false);
-  // const [fetchFragments, setFetchFragments] = useState(false);
+  const [selectedLink, setSelectedLink] = useState("all");
+  const [selectedFragment, setSelectedFragment] = useAtom(selectedFragmentAtom);
 
   const getUserFragments = async () => {
     setLoading((prev) => true);
@@ -39,41 +63,110 @@ function Fragments() {
 
   useEffect(() => {
     if (!user || !user.signInUserSession?.idToken) return;
+    console.log("Fragments.jsx useEffect()[user]: ");
     getUserFragments();
+  }, [user]);
 
-    // return () => {
-    //   setFragments([]);
-    // };
+  useEffect(() => {
+    if (!user || !user.signInUserSession?.idToken) return;
+    getUserFragments();
   }, []);
 
-  if (!user || !user.username) return <div>loading...</div>;
+  if (!user || !user.username || !compFragments) return <div>loading...</div>;
   return (
     <div className="fragments">
+      {/* Fragments Header */}
       <div className="fragments__header">
-        <span className="text-xl font-bold text-teal-50 tracking-wide">
-          Fragments
-        </span>
+        <div className="flex items-center space-x-2">
+          <CubeTransparentIcon className="w-8 h-8 text-teal-500" />
+          <span className="text-3xl font-bold tracking-wide text-teal-200">
+            Fragments
+          </span>
+        </div>
         <div className="fragments__header__icons">
           <PlusIcon />
           <RefreshIcon onClick={() => getUserFragments()} />
         </div>
       </div>
-      <div className="fragments__container">
-        {loading
-          ? "loading..."
-          : compFragments.length > 0
-          ? compFragments.map((fragment) => {
-              return <InfoIconBig key={fragment.id} fragment={fragment} />;
-            })
-          : "0 fragments"}
-      </div>
 
-      <div className="fragments__footer">
-        <span>Space Used: {0}kb</span>
+      {/* Fragments Container */}
+      <div className="relative flex flex-grow overflow-hidden">
+        {/* inner page */}
+        {selectedFragment.id ? <BigCard /> : null}
 
-        <span>Fragments: {compFragments.length}</span>
+        {/* menu */}
+        <Menu />
 
-        <span>Biggest Fragment: {10}kb</span>
+        {/* inner screens */}
+        <div className="relative flex w-full h-full overflow-hidden">
+          <div className="flex flex-col flex-grow overflow-hidden">
+            <div className="fragments__search">
+              <div className="fragments__search__container">
+                <div className="fragments__search__input">
+                  <input
+                    type="text"
+                    placeholder="Search Fragments"
+                    className="fragments__search__input__input"
+                  />
+                  <DocumentSearchIcon />
+                </div>
+              </div>
+              <div className="fragments__filters">
+                <select>
+                  <option>All Types</option>
+                </select>
+                <select>
+                  <option>Date Created</option>
+                  <option>Fragment Size</option>
+                </select>
+                <SortDescendingIcon className="active" />
+                <SortAscendingIcon />
+              </div>
+            </div>
+            <div className="fragments__container">
+              {loading ? (
+                <div className="relative flex items-center justify-center h-full col-span-5">
+                  <div className="loader">
+                    <div className="loader__inner"></div>
+                  </div>
+                </div>
+              ) : compFragments.length > 0 ? (
+                compFragments.map((fragment) => {
+                  return <InfoIconBig key={fragment.id} fragment={fragment} />;
+                })
+              ) : (
+                "0 fragments"
+              )}
+            </div>
+
+            {/* Fragments Footer */}
+            <div className="fragments__footer">
+              <span className="fragments__footer__stat">
+                <CubeIcon />
+                <span className="fragments__footer__value">
+                  {compFragments.length}
+                </span>
+                <span>fragments</span>
+              </span>
+              <span className="spacer"></span>
+              <span className="fragments__footer__stat">
+                <ChartPieIcon />
+                <span className="fragments__footer__value">
+                  {humanFileSize(getTotalSize(compFragments))}
+                </span>
+                <span>space used</span>
+              </span>
+              <span className="spacer"></span>
+              <span className="fragments__footer__stat">
+                <ArrowsExpandIcon />
+                <span className="fragments__footer__value">
+                  {humanFileSize(getLargestFragment(compFragments))}
+                </span>
+                <span>largest fragment</span>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
