@@ -1,0 +1,44 @@
+.menu {
+  @apply flex-none w-72 bg-teal-900 border-r border-teal-900 bg-opacity-20 border-opacity-40;
+  // @apply overflow-hidden;
+  @apply flex flex-col;
+  & * {
+    @apply select-none;
+  }
+  &__container {
+    @apply flex flex-col p-5 space-y-4 text-xl text-teal-200;
+  }
+
+  &__item {
+    @apply flex items-center space-x-2 p-2 rounded-md cursor-pointer;
+    & > svg {
+      @apply w-5 h-5 text-teal-400;
+    }
+
+    &.active {
+      @apply bg-teal-700 text-teal-100;
+    }
+
+    &:hover {
+      @apply bg-teal-700;
+    }
+  }
+
+  &__types {
+    @apply flex flex-col space-y-3;
+    @apply text-base;
+
+    & > li {
+      @apply flex items-center justify-start space-x-2 pl-6;
+      @apply uppercase text-sm;
+      & > .file {
+        @apply lowercase text-center text-xs py-1 rounded-md w-[5ch] font-bold;
+      }
+    }
+  }
+
+  &__footer {
+    @apply flex items-end flex-grow;
+    @apply px-5 py-3;
+  }
+}

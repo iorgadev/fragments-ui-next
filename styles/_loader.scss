@@ -1,0 +1,30 @@
+.loader {
+  @apply w-16 h-16;
+  @apply flex items-center justify-center;
+  &__inner {
+    @apply bg-teal-700;
+    animation: loader-spin 1s linear infinite;
+  }
+}
+@keyframes loader-spin {
+  0% {
+    width: 100%;
+    height: 100%;
+  }
+  25% {
+    width: 0%;
+    height: 100%;
+  }
+  50% {
+    width: 100%;
+    height: 100%;
+  }
+  75% {
+    width: 100%;
+    height: 0%;
+  }
+  100% {
+    width: 100%;
+    height: 100%;
+  }
+}

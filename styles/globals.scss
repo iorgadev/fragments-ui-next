@@ -14,7 +14,7 @@ body {
   font-size: 16px;
 
   @apply bg-neutral-900;
-  @apply text-orange-500;
+  @apply text-teal-500;
   @apply w-screen h-screen;
 
   @apply flex items-center justify-center;
@@ -31,4 +31,8 @@ a {
   box-sizing: border-box;
 }
 
+@import "./loader";
 @import "./main";
+@import "./menu";
+@import "./fragments";
+@import "./fragment";
