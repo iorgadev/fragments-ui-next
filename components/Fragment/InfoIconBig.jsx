@@ -21,7 +21,7 @@ function InfoIconBig(props) {
   const [selectedFragment, setSelectedFragment] = useAtom(selectedFragmentAtom);
 
   const handleClick = () => {
-    console.log("InfoIconBig.jsx handleClick(): ", fragment);
+    // console.log("InfoIconBig.jsx handleClick(): ", fragment);
     // setSelected((prev) => true);
     setSelectedFragment((prev) => (prev = fragment));
   };
