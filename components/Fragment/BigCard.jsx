@@ -15,7 +15,7 @@ import {
 } from "@heroicons/react/solid";
 import Loading from "@/components/Loading";
 import Stat from "./Stat";
-import { humanFileSize } from "@/utils/fragmentUtils";
+import { humanFileSize, humanDate } from "@/utils/fragmentUtils";
 
 function BigCard() {
   const [user] = useAtom(userAtom);
@@ -58,21 +58,14 @@ function BigCard() {
   useEffect(() => {
     if (!selectedFragment) return;
     fetchFragmentData(selectedFragment);
-    return () => {};
   }, [selectedFragment]);
 
   return (
     <div className="fragment" onClick={(e) => handleCloseFragmentData(e)}>
-      <div className="absolute top-0 right-0">
-        <span className="relative top-2 right-2">
-          <XIcon className="close-icon" />
-        </span>
-      </div>
       <div
         className="fragment__container"
         onClick={(e) => {
           e.stopPropagation();
-          console.log("clicked on inner fragment data");
         }}
       >
         <div className="fragment__stats">
@@ -85,13 +78,13 @@ function BigCard() {
           <Stat
             icon={<ClockIcon />}
             label="Created"
-            value={selectedFragment.created}
+            value={humanDate(selectedFragment.created)}
           />
 
           <Stat
             icon={<PencilAltIcon />}
             label="Modified"
-            value={selectedFragment.updated}
+            value={humanDate(selectedFragment.updated)}
           />
 
           <Stat
@@ -113,6 +106,14 @@ function BigCard() {
           />
         </div>
         <div className="fragment__data">
+          <div
+            className="absolute top-0 right-0"
+            onClick={(e) => handleCloseFragmentData(e)}
+          >
+            <span className="relative -top-5 -right-5">
+              <XIcon className="close-icon" />
+            </span>
+          </div>
           {loading ? (
             <Loading />
           ) : (
