@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import {
   userAtom,
-  selectedFragmentAtom,
+  // selectedFragmentAtom,
   userFragmentsAtom,
 } from "../../pages/_app";
+import { selectedFragmentAtom } from "@/components/Fragment/InfoIconBig";
 import Loading from "@/components/Loading";
 import InfoIconBig from "@/components/Fragment/InfoIconBig";
 import BigCard from "@/components/Fragment/BigCard";
@@ -38,12 +39,12 @@ import {
 function Fragments() {
   const [user] = useAtom(userAtom);
   const [fragments, setFragments] = useAtom(userFragmentsAtom);
-  const [filteredFragments, setFilteredFragments] = useState([]);
+  // const [filteredFragments, setFilteredFragments] = useState([]);9
   const [loading, setLoading] = useState(false);
   const [selectedFragment] = useAtom(selectedFragmentAtom);
   const [searchString, setSearchString] = useState("");
   const [sortDirection, setSortDirection] = useState("desc");
-  const [sortBy, setSortBy] = useState("size");
+  const [sortBy, setSortBy] = useState("created");
 
   const getUserFragments = async () => {
     setLoading((prev) => true);
@@ -57,7 +58,7 @@ function Fragments() {
       }
     );
     const data = await response.json();
-    console.log("getUserFragments() data: ", data);
+    // console.log("getUserFragments() data: ", data);
     setLoading((prev) => false);
     if (data.fragments !== undefined) setFragments(data.fragments);
     // TODO: else, display error message (example: Unauthorized)
@@ -94,18 +95,23 @@ function Fragments() {
       }
     } else if (sortBy === "created") {
       if (sortDirection === "desc") {
-        filtered.sort((a, b) => b.created - a.created);
+        filtered.sort((a, b) => Date.parse(b.created) - Date.parse(a.created));
       } else {
-        filtered.sort((a, b) => a.created - b.created);
+        filtered.sort((a, b) => Date.parse(a.created) - Date.parse(b.created));
       }
     }
 
-    setFilteredFragments(filtered);
+    // setFilteredFragments((prev) => filtered);
+    return filtered;
+  };
+
+  const handleSortByOption = (option) => {
+    setSortBy((prev) => option);
   };
 
   useEffect(() => {
     console.log("Fragments.jsx useEffect()[fragments]: ", fragments);
-    filterFragments();
+    // filterFragments();
   }, [fragments]);
 
   useEffect(() => {
@@ -115,8 +121,14 @@ function Fragments() {
   }, [user]);
 
   useEffect(() => {
+    console.log(
+      "Fragments.jsx useEffect()[filter options]: ",
+      searchString,
+      sortDirection,
+      sortBy
+    );
     filterFragments();
-  }, [searchString, sortDirection]);
+  }, [searchString, sortDirection, sortBy]);
 
   useEffect(() => {
     if (fragments.length === 0) {
@@ -142,8 +154,8 @@ function Fragments() {
           </span>
         </div>
         <div className="fragments__header__icons">
-          <PlusIcon />
-          <RefreshIcon onClick={() => getUserFragments()} />
+          {/* <PlusIcon /> */}
+          {/* <RefreshIcon onClick={() => getUserFragments()} /> */}
         </div>
       </div>
 
@@ -153,7 +165,7 @@ function Fragments() {
         {selectedFragment.id ? <BigCard /> : null}
 
         {/* menu */}
-        <Menu />
+        <Menu getUserFragments={getUserFragments} loading={loading} />
 
         {/* inner screens */}
         <div className="relative flex w-full h-full overflow-hidden">
@@ -176,10 +188,10 @@ function Fragments() {
                 <select>
                   <option>All Types</option>
                 </select>
-                <select>
-                  <option>Date Created</option>
-                  <option>Fragment Size</option>
-                  <option>Fragment Type</option>
+                <select onChange={(e) => handleSortByOption(e.target.value)}>
+                  <option value="created">Date Created</option>
+                  <option value="size">Fragment Size</option>
+                  <option value="type">Fragment Type</option>
                 </select>
                 <SortDescendingIcon
                   className={sortDirection === "desc" ? "active" : ""}
@@ -200,8 +212,8 @@ function Fragments() {
             >
               {loading ? (
                 <Loading />
-              ) : filteredFragments.length > 0 ? (
-                filteredFragments.map((fragment) => {
+              ) : filterFragments().length > 0 ? (
+                filterFragments().map((fragment) => {
                   return <InfoIconBig key={fragment.id} fragment={fragment} />;
                 })
               ) : (
@@ -219,7 +231,6 @@ function Fragments() {
                   </span>
                   <span>fragments</span>
                 </span>
-                <span className="spacer"></span>
                 <span className="fragments__footer__stat">
                   <ChartPieIcon />
                   <span className="fragments__footer__value">
@@ -227,7 +238,6 @@ function Fragments() {
                   </span>
                   <span>space used</span>
                 </span>
-                <span className="spacer"></span>
                 <span className="fragments__footer__stat">
                   <ArrowsExpandIcon />
                   <span className="fragments__footer__value">
