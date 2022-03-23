@@ -9,6 +9,9 @@ import {
   ViewGridAddIcon,
   UserIcon,
   RefreshIcon,
+  DocumentTextIcon,
+  CodeIcon,
+  PhotographIcon,
 } from "@heroicons/react/outline";
 
 function Menu({ getUserFragments, loading }) {
@@ -38,13 +41,17 @@ function Menu({ getUserFragments, loading }) {
           <ChevronDownIcon className="w-4 h-4" />
         </div>
         <ul className="menu__types">
+          <li className="type">
+            <DocumentTextIcon />
+            <span>TEXT</span>
+          </li>
           <li>
             <span
               className={`file ${fragmentColors["text/plain"]} bg-slate-800`}
             >
               txt
             </span>
-            <span>text/plain</span>
+            <span>plain</span>
           </li>
           <li>
             <span
@@ -52,7 +59,7 @@ function Menu({ getUserFragments, loading }) {
             >
               md
             </span>
-            <span>text/markdown</span>
+            <span>markdown</span>
           </li>
           <li>
             <span
@@ -60,7 +67,11 @@ function Menu({ getUserFragments, loading }) {
             >
               html
             </span>
-            <span>text/html</span>
+            <span>html</span>
+          </li>
+          <li className="type">
+            <CodeIcon />
+            <span>APPLICATION</span>
           </li>
           <li>
             <span
@@ -68,7 +79,11 @@ function Menu({ getUserFragments, loading }) {
             >
               json
             </span>
-            <span>application/json</span>
+            <span>json</span>
+          </li>
+          <li className="type">
+            <PhotographIcon />
+            <span>IMAGE</span>
           </li>
           <li>
             <span
@@ -76,7 +91,7 @@ function Menu({ getUserFragments, loading }) {
             >
               png
             </span>
-            <span>image/png</span>
+            <span>png</span>
           </li>
           <li>
             <span
@@ -84,7 +99,7 @@ function Menu({ getUserFragments, loading }) {
             >
               jpg
             </span>
-            <span>image/jpeg</span>
+            <span>jpeg</span>
           </li>
           <li>
             <span
@@ -92,7 +107,7 @@ function Menu({ getUserFragments, loading }) {
             >
               webp
             </span>
-            <span>image/webp</span>
+            <span>webp</span>
           </li>
           <li>
             <span
@@ -100,7 +115,7 @@ function Menu({ getUserFragments, loading }) {
             >
               gif
             </span>
-            <span>image/gif</span>
+            <span>gif</span>
           </li>
         </ul>
       </div>
