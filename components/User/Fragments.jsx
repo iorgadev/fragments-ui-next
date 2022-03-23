@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
-import { useAtom, atom } from "jotai";
-import { userAtom, selectedFragmentAtom } from "../../pages/_app";
+import { useAtom } from "jotai";
+import {
+  userAtom,
+  selectedFragmentAtom,
+  userFragmentsAtom,
+} from "../../pages/_app";
 import Loading from "@/components/Loading";
 import InfoIconBig from "@/components/Fragment/InfoIconBig";
 import BigCard from "@/components/Fragment/BigCard";
@@ -29,15 +33,17 @@ import {
   UserIcon,
 } from "@heroicons/react/outline";
 
-export const userFragmentsAtom = atom([]);
+// export const userFragmentsAtom = atom([]);
 
 function Fragments() {
   const [user] = useAtom(userAtom);
   const [fragments, setFragments] = useAtom(userFragmentsAtom);
-  const [compFragments, setCompFragments] = useState([]);
+  // const [compFragments, setCompFragments] = useState([]);
+  const [filteredFragments, setFilteredFragments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedLink, setSelectedLink] = useState("all");
   const [selectedFragment, setSelectedFragment] = useAtom(selectedFragmentAtom);
+  const [searchString, setSearchString] = useState("");
 
   const getUserFragments = async () => {
     setLoading((prev) => true);
@@ -53,13 +59,26 @@ function Fragments() {
     const data = await response.json();
     console.log("getUserFragments() data: ", data);
     setLoading((prev) => false);
-    setFragments(data.fragments);
+    if (data.fragments !== undefined) setFragments(data.fragments);
+    // setCompFragments(data.fragments);
     return data;
   };
 
+  const filterFragments = () => {
+    let filtered = [];
+    if (searchString === "") {
+      filtered = fragments;
+    } else {
+      filtered = fragments.filter((fragment) =>
+        fragment.id.includes(searchString)
+      );
+    }
+    setFilteredFragments(filtered);
+  };
+
   useEffect(() => {
-    console.log("Fragments.jsx useEffect(): ", fragments);
-    setCompFragments((prev) => (prev = fragments));
+    console.log("Fragments.jsx useEffect()[fragments]: ", fragments);
+    filterFragments();
   }, [fragments]);
 
   useEffect(() => {
@@ -69,11 +88,30 @@ function Fragments() {
   }, [user]);
 
   useEffect(() => {
-    if (!user || !user.signInUserSession?.idToken) return;
-    getUserFragments();
+    // if (!searchString || searchString.length === 0) {
+    //   console.log("Fragments.jsx useEffect()[searchString 0]: ", searchString);
+    //   setFilteredFragments((prev) => (prev = fragments));
+    // } else {
+    //   const filtered = fragments.filter((fragment) => {
+    //     return fragment.id.includes(searchString);
+    //   });
+    //   console.log("Fragments.jsx useEffect()[filtered]: ", filtered);
+    //   setFilteredFragments((prev) => (prev = filtered));
+    // }
+    filterFragments();
+  }, [searchString]);
+
+  useEffect(() => {
+    if (fragments.length === 0) {
+      console.log("Fragments.jsx useEffect()[fragments.length]: ", fragments);
+      getUserFragments();
+    } else {
+      console.log("Fragments.jsx useEffect()[fragments.length]: ", fragments);
+    }
   }, []);
 
-  if (!user || !user.username || !compFragments) return <div>loading...</div>;
+  // if (!user || !user.username || !compFragments) return <div>loading...</div>;
+  if (!user || !user.username) return <div>loading...</div>;
   return (
     <div className="fragments">
       {/* Fragments Header */}
@@ -100,7 +138,8 @@ function Fragments() {
 
         {/* inner screens */}
         <div className="relative flex w-full h-full overflow-hidden">
-          <div className="flex flex-col flex-grow overflow-hidden">
+          <div className="flex flex-col w-full overflow-hidden">
+            {/* search bar */}
             <div className="fragments__search">
               <div className="fragments__search__container">
                 <div className="fragments__search__input">
@@ -108,6 +147,8 @@ function Fragments() {
                     type="text"
                     placeholder="Search Fragments"
                     className="fragments__search__input__input"
+                    value={searchString}
+                    onChange={(e) => setSearchString(e.target.value)}
                   />
                   <DocumentSearchIcon />
                 </div>
@@ -119,16 +160,23 @@ function Fragments() {
                 <select>
                   <option>Date Created</option>
                   <option>Fragment Size</option>
+                  <option>Fragment Type</option>
                 </select>
                 <SortDescendingIcon className="active" />
                 <SortAscendingIcon />
               </div>
             </div>
-            <div className="fragments__container">
+
+            {/* fragments container */}
+            <div
+              className={`fragments__container ${
+                loading ? `items-center justify-center` : `items-start`
+              }`}
+            >
               {loading ? (
                 <Loading />
-              ) : compFragments.length > 0 ? (
-                compFragments.map((fragment) => {
+              ) : filteredFragments.length > 0 ? (
+                filteredFragments.map((fragment) => {
                   return <InfoIconBig key={fragment.id} fragment={fragment} />;
                 })
               ) : (
@@ -138,29 +186,31 @@ function Fragments() {
 
             {/* Fragments Footer */}
             <div className="fragments__footer">
-              <span className="fragments__footer__stat">
-                <CubeIcon />
-                <span className="fragments__footer__value">
-                  {compFragments.length}
+              <div className="fragments__footer__container">
+                <span className="fragments__footer__stat">
+                  <CubeIcon />
+                  <span className="fragments__footer__value">
+                    {fragments.length}
+                  </span>
+                  <span>fragments</span>
                 </span>
-                <span>fragments</span>
-              </span>
-              <span className="spacer"></span>
-              <span className="fragments__footer__stat">
-                <ChartPieIcon />
-                <span className="fragments__footer__value">
-                  {humanFileSize(getTotalSize(compFragments))}
+                <span className="spacer"></span>
+                <span className="fragments__footer__stat">
+                  <ChartPieIcon />
+                  <span className="fragments__footer__value">
+                    {humanFileSize(getTotalSize(fragments))}
+                  </span>
+                  <span>space used</span>
                 </span>
-                <span>space used</span>
-              </span>
-              <span className="spacer"></span>
-              <span className="fragments__footer__stat">
-                <ArrowsExpandIcon />
-                <span className="fragments__footer__value">
-                  {humanFileSize(getLargestFragment(compFragments))}
+                <span className="spacer"></span>
+                <span className="fragments__footer__stat">
+                  <ArrowsExpandIcon />
+                  <span className="fragments__footer__value">
+                    {humanFileSize(getLargestFragment(fragments))}
+                  </span>
+                  <span>largest fragment</span>
                 </span>
-                <span>largest fragment</span>
-              </span>
+              </div>
             </div>
           </div>
         </div>
