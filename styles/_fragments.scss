@@ -46,17 +46,38 @@
   &__filters {
     @apply flex items-center space-x-2;
     & > svg {
-      @apply w-6 h-6;
+      @apply w-6 h-6 flex-none;
       @apply text-teal-800 cursor-pointer;
       &.active {
         @apply text-teal-400;
       }
     }
-    & > select {
-      @apply text-teal-500;
+    & > select,
+    & .filter-types {
+      @apply text-teal-500 text-sm;
       @apply bg-neutral-800;
       @apply border-2 border-neutral-700;
       @apply px-3 py-1;
+    }
+
+    & > .filtertypes {
+      @apply relative w-48;
+
+      & > .display {
+        @apply text-teal-500 text-sm;
+        @apply bg-neutral-800;
+        @apply border-2 border-neutral-700;
+        @apply px-3 py-0.5;
+        // @apply border border-green-500;
+        &.open {
+          @apply border-b-transparent;
+        }
+      }
+
+      & > .dropdown {
+        @apply absolute z-10 w-full p-2;
+        @apply bg-neutral-800 border-2 border-neutral-700;
+      }
     }
   }
 

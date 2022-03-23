@@ -29,10 +29,22 @@
     @apply text-base;
 
     & > li {
-      @apply flex items-center justify-start space-x-2 pl-6;
+      @apply flex items-center justify-start space-x-2;
       @apply uppercase text-sm;
+      @apply pl-14;
       & > .file {
         @apply lowercase text-center text-xs py-1 rounded-md w-[5ch] font-bold;
+      }
+    }
+    & > li.type {
+      @apply text-base font-bold;
+      @apply pl-6;
+      @apply text-teal-500;
+      &:not(:first-child) {
+        @apply mt-5;
+      }
+      & > svg {
+        @apply w-5 h-5 text-teal-700;
       }
     }
   }
