@@ -1,25 +1,10 @@
 import React from "react";
 import { useAtom } from "jotai";
-import { selectedLinkAtom, userAtom } from "@/pages/_app";
-import { userFragmentsAtom } from "@/components/User/Fragments";
+import { selectedLinkAtom, userAtom, userFragmentsAtom } from "@/pages/_app";
 import { fragmentColors } from "@/utils/fragmentTypes";
 
-import {
-  RefreshIcon,
-  PlusIcon,
-  CubeTransparentIcon,
-  ChevronDownIcon,
-  DocumentSearchIcon,
-  SortAscendingIcon,
-  SortDescendingIcon,
-} from "@heroicons/react/solid";
-import {
-  CubeIcon,
-  ViewGridAddIcon,
-  ChartPieIcon,
-  ArrowsExpandIcon,
-  UserIcon,
-} from "@heroicons/react/outline";
+import { ChevronDownIcon } from "@heroicons/react/solid";
+import { CubeIcon, ViewGridAddIcon, UserIcon } from "@heroicons/react/outline";
 
 function Menu() {
   const [user] = useAtom(userAtom);
