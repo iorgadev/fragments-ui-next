@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAtom } from "jotai";
 import { DocumentIcon } from "@heroicons/react/solid";
 import { getMimeTypeExtension } from "../../utils/fragmentTypes";
-import { selectedFragmentAtom } from "@/pages/_app";
+// import { selectedFragmentAtom } from "@/pages/_app";
 
 const fragmentColors = {
   "text/plain": "text-slate-400",
@@ -14,6 +14,8 @@ const fragmentColors = {
   "image/webp": "text-red-400",
   "image/gif": "text-gray-400",
 };
+import { atom } from "jotai";
+export const selectedFragmentAtom = atom({});
 
 function InfoIconBig(props) {
   const { fragment } = props;
