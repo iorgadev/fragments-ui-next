@@ -27,4 +27,19 @@ const getTotalSize = (fragments) => {
   return totalSize;
 };
 
-export { getLargestFragment, humanFileSize, getTotalSize };
+// given a date, return a human readable date in 24 hour format without AM/PM
+const humanDate = (date) => {
+  const options = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: false,
+  };
+  return new Date(date).toLocaleString("en-US", options);
+  // return new Date(date).toLocaleString();
+};
+
+export { getLargestFragment, humanFileSize, getTotalSize, humanDate };
