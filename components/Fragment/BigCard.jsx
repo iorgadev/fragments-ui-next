@@ -4,11 +4,7 @@ import { selectedFragmentAtom, userAtom } from "@/pages/_app";
 import { XIcon } from "@heroicons/react/solid";
 import { getValidConversionTypes } from "@/utils/fragmentTypes";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import {
-  nord,
-  stackoverflowDark,
-} from "react-syntax-highlighter/dist/cjs/styles/hljs";
-import { gruvboxDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import { stackoverflowDark } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 import {
   FingerPrintIcon,
   ClockIcon,
@@ -17,12 +13,14 @@ import {
   ArrowsExpandIcon,
   ColorSwatchIcon,
 } from "@heroicons/react/solid";
-
+import Loading from "@/components/Loading";
 import Stat from "./Stat";
+import { humanFileSize } from "@/utils/fragmentUtils";
 
 function BigCard() {
   const [user] = useAtom(userAtom);
   const [fragmentData, setFragmentData] = useState();
+  const [loading, setLoading] = useState(false);
   const [selectedFragment, setSelectedFragment] = useAtom(selectedFragmentAtom);
 
   const handleCloseFragmentData = (e) => {
@@ -31,6 +29,7 @@ function BigCard() {
   };
 
   const fetchFragmentData = async (fragment) => {
+    setLoading((prev) => true);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/v1/fragments/${fragment.id}`,
       {
@@ -52,6 +51,7 @@ function BigCard() {
     } else if (selectedFragment.type === "image/png") {
       data = await response.blob();
     }
+    setLoading((prev) => false);
     setFragmentData(data.toString());
   };
 
@@ -103,7 +103,7 @@ function BigCard() {
           <Stat
             icon={<ArrowsExpandIcon />}
             label="Size"
-            value={selectedFragment.size}
+            value={humanFileSize(selectedFragment.size)}
           />
 
           <Stat
@@ -113,49 +113,60 @@ function BigCard() {
           />
         </div>
         <div className="fragment__data">
-          <div className="fragment__data__container">
-            {selectedFragment.type === "text/plain" ? (
-              <pre>{fragmentData}</pre>
-            ) : null}
+          {loading ? (
+            <Loading />
+          ) : (
+            <div className="fragment__data__container">
+              {selectedFragment.type === "text/plain" ? (
+                // <pre>{fragmentData}</pre>
+                <SyntaxHighlighter
+                  language="text"
+                  style={stackoverflowDark}
+                  wrapLongLines={true}
+                >
+                  {fragmentData}
+                </SyntaxHighlighter>
+              ) : null}
 
-            {selectedFragment.type === "text/markdown" ? (
-              <SyntaxHighlighter
-                language="markdown"
-                style={stackoverflowDark}
-                wrapLongLines={true}
-              >
-                {fragmentData}
-              </SyntaxHighlighter>
-            ) : null}
+              {selectedFragment.type === "text/markdown" ? (
+                <SyntaxHighlighter
+                  language="markdown"
+                  style={stackoverflowDark}
+                  wrapLongLines={true}
+                >
+                  {fragmentData}
+                </SyntaxHighlighter>
+              ) : null}
 
-            {selectedFragment.type === "text/html" ? (
-              <SyntaxHighlighter
-                language="html"
-                style={stackoverflowDark}
-                // customStyle={{ width: "100%" }}
-                wrapLongLines={true}
-                // useInlineStyles={false}
-                // showLineNumbers={true}
-                lineNumberStyle={{
-                  fontWeight: "bold",
-                  borderRight: "1px solid #ccc",
-                  marginRight: "1rem",
-                }}
-              >
-                {fragmentData}
-              </SyntaxHighlighter>
-            ) : null}
+              {selectedFragment.type === "text/html" ? (
+                <SyntaxHighlighter
+                  language="html"
+                  style={stackoverflowDark}
+                  // customStyle={{ width: "100%" }}
+                  wrapLongLines={true}
+                  // useInlineStyles={false}
+                  // showLineNumbers={true}
+                  lineNumberStyle={{
+                    fontWeight: "bold",
+                    borderRight: "1px solid #ccc",
+                    marginRight: "1rem",
+                  }}
+                >
+                  {fragmentData}
+                </SyntaxHighlighter>
+              ) : null}
 
-            {selectedFragment.type === "application/json" ? (
-              <SyntaxHighlighter
-                language="json"
-                style={stackoverflowDark}
-                wrapLongLines={true}
-              >
-                {fragmentData}
-              </SyntaxHighlighter>
-            ) : null}
-          </div>
+              {selectedFragment.type === "application/json" ? (
+                <SyntaxHighlighter
+                  language="json"
+                  style={stackoverflowDark}
+                  wrapLongLines={true}
+                >
+                  {fragmentData}
+                </SyntaxHighlighter>
+              ) : null}
+            </div>
+          )}
         </div>
       </div>
     </div>
