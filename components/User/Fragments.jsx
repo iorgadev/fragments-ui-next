@@ -38,12 +38,12 @@ import {
 function Fragments() {
   const [user] = useAtom(userAtom);
   const [fragments, setFragments] = useAtom(userFragmentsAtom);
-  // const [compFragments, setCompFragments] = useState([]);
   const [filteredFragments, setFilteredFragments] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedLink, setSelectedLink] = useState("all");
-  const [selectedFragment, setSelectedFragment] = useAtom(selectedFragmentAtom);
+  const [selectedFragment] = useAtom(selectedFragmentAtom);
   const [searchString, setSearchString] = useState("");
+  const [sortDirection, setSortDirection] = useState("desc");
+  const [sortBy, setSortBy] = useState("size");
 
   const getUserFragments = async () => {
     setLoading((prev) => true);
@@ -60,8 +60,8 @@ function Fragments() {
     console.log("getUserFragments() data: ", data);
     setLoading((prev) => false);
     if (data.fragments !== undefined) setFragments(data.fragments);
-    // setCompFragments(data.fragments);
-    return data;
+    // TODO: else, display error message (example: Unauthorized)
+    // return data;
   };
 
   const filterFragments = () => {
@@ -73,6 +73,33 @@ function Fragments() {
         fragment.id.includes(searchString)
       );
     }
+
+    if (sortBy === "size") {
+      if (sortDirection === "desc") {
+        filtered.sort((a, b) => b.size - a.size);
+      } else {
+        filtered.sort((a, b) => a.size - b.size);
+      }
+    } else if (sortBy === "name") {
+      if (sortDirection === "desc") {
+        filtered.sort((a, b) => b.name.localeCompare(a.name));
+      } else {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+      }
+    } else if (sortBy === "type") {
+      if (sortDirection === "desc") {
+        filtered.sort((a, b) => b.type.localeCompare(a.type));
+      } else {
+        filtered.sort((a, b) => a.type.localeCompare(b.type));
+      }
+    } else if (sortBy === "created") {
+      if (sortDirection === "desc") {
+        filtered.sort((a, b) => b.created - a.created);
+      } else {
+        filtered.sort((a, b) => a.created - b.created);
+      }
+    }
+
     setFilteredFragments(filtered);
   };
 
@@ -88,18 +115,8 @@ function Fragments() {
   }, [user]);
 
   useEffect(() => {
-    // if (!searchString || searchString.length === 0) {
-    //   console.log("Fragments.jsx useEffect()[searchString 0]: ", searchString);
-    //   setFilteredFragments((prev) => (prev = fragments));
-    // } else {
-    //   const filtered = fragments.filter((fragment) => {
-    //     return fragment.id.includes(searchString);
-    //   });
-    //   console.log("Fragments.jsx useEffect()[filtered]: ", filtered);
-    //   setFilteredFragments((prev) => (prev = filtered));
-    // }
     filterFragments();
-  }, [searchString]);
+  }, [searchString, sortDirection]);
 
   useEffect(() => {
     if (fragments.length === 0) {
@@ -110,8 +127,10 @@ function Fragments() {
     }
   }, []);
 
-  // if (!user || !user.username || !compFragments) return <div>loading...</div>;
+  // Set to Loading if user is not loaded yet
   if (!user || !user.username) return <div>loading...</div>;
+
+  // Display component if user is loaded
   return (
     <div className="fragments">
       {/* Fragments Header */}
@@ -162,8 +181,14 @@ function Fragments() {
                   <option>Fragment Size</option>
                   <option>Fragment Type</option>
                 </select>
-                <SortDescendingIcon className="active" />
-                <SortAscendingIcon />
+                <SortDescendingIcon
+                  className={sortDirection === "desc" ? "active" : ""}
+                  onClick={() => setSortDirection((prev) => "desc")}
+                />
+                <SortAscendingIcon
+                  className={sortDirection === "asc" ? "active" : ""}
+                  onClick={() => setSortDirection((prev) => "asc")}
+                />
               </div>
             </div>
 
