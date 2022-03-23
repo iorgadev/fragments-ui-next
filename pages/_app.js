@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     if (user.username) {
-      console.log("user.username", user.username);
+      // console.log("user.username", user.username);
       setLoggedIn((prev) => true);
     } else {
       setLoggedIn((prev) => false);
