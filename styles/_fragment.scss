@@ -48,6 +48,16 @@
       // @apply bg-neutral-800;
       // @apply overflow-x-hidden;
       @apply bg-[#1c1b1b] overflow-y-scroll scrollbar-thin;
+
+      &__image {
+        @apply w-full h-full;
+        @apply flex items-center justify-center;
+        @apply p-2;
+        & > img {
+          // @apply w-full h-full;
+          @apply max-w-full max-h-full;
+        }
+      }
     }
   }
 }

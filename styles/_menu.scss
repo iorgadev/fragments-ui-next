@@ -42,3 +42,23 @@
     @apply px-5 py-3;
   }
 }
+
+.refresh-icon {
+  @apply transform -scale-x-100 text-teal-500;
+  @apply w-5 h-5;
+  &:hover {
+    @apply text-teal-200;
+  }
+  &.spin {
+    animation: rotate 2s infinite linear;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
