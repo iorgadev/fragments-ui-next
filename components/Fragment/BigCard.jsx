@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAtom } from "jotai";
-import { selectedFragmentAtom, userAtom } from "@/pages/_app";
+import { userAtom } from "@/pages/_app";
+import { selectedFragmentAtom } from "@/components/Fragment/InfoIconBig";
 import { XIcon } from "@heroicons/react/solid";
 import { getValidConversionTypes } from "@/utils/fragmentTypes";
 import SyntaxHighlighter from "react-syntax-highlighter";
@@ -48,11 +49,19 @@ function BigCard() {
       selectedFragment.type === "application/json"
     ) {
       data = await response.text();
-    } else if (selectedFragment.type === "image/png") {
+      data = data.toString();
+    } else if (
+      selectedFragment.type === "image/png" ||
+      selectedFragment.type === "image/jpeg" ||
+      selectedFragment.type === "image/webp" ||
+      selectedFragment.type === "image/gif"
+    ) {
       data = await response.blob();
+      data = await data.arrayBuffer();
+      data = await Buffer.from(data).toString("base64");
     }
     setLoading((prev) => false);
-    setFragmentData(data.toString());
+    setFragmentData(data);
   };
 
   useEffect(() => {
@@ -165,6 +174,18 @@ function BigCard() {
                 >
                   {fragmentData}
                 </SyntaxHighlighter>
+              ) : null}
+
+              {selectedFragment.type === "image/png" ||
+              selectedFragment.type === "image/jpeg" ||
+              selectedFragment.type === "image/webp" ||
+              selectedFragment.type === "image/gif" ? (
+                <div className="fragment__data__container__image">
+                  <img
+                    src={`data:image/png;base64,${fragmentData}`}
+                    width="auto"
+                  />
+                </div>
               ) : null}
             </div>
           )}
