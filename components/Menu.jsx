@@ -4,9 +4,14 @@ import { selectedLinkAtom, userAtom, userFragmentsAtom } from "@/pages/_app";
 import { fragmentColors } from "@/utils/fragmentTypes";
 
 import { ChevronDownIcon } from "@heroicons/react/solid";
-import { CubeIcon, ViewGridAddIcon, UserIcon } from "@heroicons/react/outline";
+import {
+  CubeIcon,
+  ViewGridAddIcon,
+  UserIcon,
+  RefreshIcon,
+} from "@heroicons/react/outline";
 
-function Menu() {
+function Menu({ getUserFragments, loading }) {
   const [user] = useAtom(userAtom);
   const [selectedLink, setSelectedLink] = useAtom(selectedLinkAtom);
   const [fragments] = useAtom(userFragmentsAtom);
@@ -15,11 +20,17 @@ function Menu() {
     <div className="menu">
       <div className="menu__container">
         <div className={`menu__item ${selectedLink === "all" ? `active` : ``}`}>
-          <CubeIcon />
-          <span>All Fragments </span>
+          <CubeIcon className="flex-none" />
+          <span className="whitespace-nowrap">All Fragments </span>
           <span className="px-1 py-0.5 text-xs bg-teal-900 rounded-md">
             {fragments.length}
           </span>
+          <div className="flex items-center justify-end w-full">
+            <RefreshIcon
+              className={`refresh-icon ${loading ? "spin" : ""}`}
+              onClick={() => getUserFragments()}
+            />
+          </div>
         </div>
         <div className="menu__item">
           <ViewGridAddIcon />
