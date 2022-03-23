@@ -34,6 +34,51 @@ import {
   UserIcon,
 } from "@heroicons/react/outline";
 
+import FilterType from "@/components/Fragment/FilterType";
+
+const filterTypesArray = [
+  {
+    type: "text/plain",
+    label: "Plain Text",
+    selected: false,
+  },
+  {
+    type: "text/markdown",
+    label: "Markdown",
+    selected: false,
+  },
+  {
+    type: "text/html",
+    label: "HTML",
+    selected: false,
+  },
+  {
+    type: "application/json",
+    label: "JSON",
+    selected: false,
+  },
+  {
+    type: "image/png",
+    label: "PNG",
+    selected: false,
+  },
+  {
+    type: "image/jpeg",
+    label: "JPEG",
+    selected: false,
+  },
+  {
+    type: "image/webp",
+    label: "WebP",
+    selected: false,
+  },
+  {
+    type: "image/gif",
+    label: "GIF",
+    selected: false,
+  },
+];
+
 // export const userFragmentsAtom = atom([]);
 
 function Fragments() {
@@ -45,6 +90,8 @@ function Fragments() {
   const [searchString, setSearchString] = useState("");
   const [sortDirection, setSortDirection] = useState("desc");
   const [sortBy, setSortBy] = useState("created");
+  const [showFilterTypes, setShowFilterTypes] = useState(false);
+  const [filterTypes, setFilterTypes] = useState(filterTypesArray);
 
   const getUserFragments = async () => {
     setLoading((prev) => true);
@@ -67,12 +114,24 @@ function Fragments() {
 
   const filterFragments = () => {
     let filtered = [];
+
+    // filter by search string
     if (searchString === "") {
       filtered = fragments;
     } else {
       filtered = fragments.filter((fragment) =>
         fragment.id.includes(searchString)
       );
+    }
+
+    // // filter fragments of multiple types by selected filter types
+    if (filterTypes.find((type) => type.selected)) {
+      filtered = filtered.filter((fragment) => {
+        const results = filterTypes.some((filterType) => {
+          return filterType.selected && fragment.type === filterType.type;
+        });
+        return results;
+      });
     }
 
     if (sortBy === "size") {
@@ -105,8 +164,25 @@ function Fragments() {
     return filtered;
   };
 
+  // handle sort by option change
   const handleSortByOption = (option) => {
     setSortBy((prev) => option);
+  };
+
+  // handle selecting types to filter by
+  const handleFilterTypes = (type) => {
+    const newFilterTypes = filterTypes.map((filterType) => {
+      if (filterType.type === type) {
+        filterType.selected = !filterType.selected;
+      }
+      return filterType;
+    });
+    setFilterTypes((prev) => newFilterTypes);
+  };
+  // is the filter type selected?
+  const isFilterTypeSelected = (type) => {
+    const selected = filterTypes.find((filterType) => filterType.type === type);
+    return selected.selected;
   };
 
   useEffect(() => {
@@ -185,9 +261,37 @@ function Fragments() {
                 </div>
               </div>
               <div className="fragments__filters">
-                <select>
-                  <option>All Types</option>
-                </select>
+                <div className="filtertypes">
+                  {/* <select onClick={() => setShowFilterTypes((prev) => !prev)}>
+                    <option>All Types</option>
+                  </select> */}
+                  <div
+                    className={`display ${showFilterTypes ? "open" : ""}`}
+                    onClick={() => setShowFilterTypes((prev) => !prev)}
+                  >
+                    Types
+                  </div>
+                  {showFilterTypes ? (
+                    <div className="dropdown">
+                      {filterTypes.map((filterType) => (
+                        <div
+                          key={filterType.type}
+                          className={`flex items-center space-x-2`}
+                          onClick={() => handleFilterTypes(filterType.type)}
+                        >
+                          <div
+                            className={`w-4 h-4 rounded-sm ${
+                              isFilterTypeSelected(filterType.type)
+                                ? `bg-teal-300`
+                                : `bg-red-500`
+                            }`}
+                          ></div>
+                          <span>{filterType.type}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
                 <select onChange={(e) => handleSortByOption(e.target.value)}>
                   <option value="created">Date Created</option>
                   <option value="size">Fragment Size</option>
@@ -227,21 +331,21 @@ function Fragments() {
                 <span className="fragments__footer__stat">
                   <CubeIcon />
                   <span className="fragments__footer__value">
-                    {fragments.length}
+                    {filterFragments().length}
                   </span>
                   <span>fragments</span>
                 </span>
                 <span className="fragments__footer__stat">
                   <ChartPieIcon />
                   <span className="fragments__footer__value">
-                    {humanFileSize(getTotalSize(fragments))}
+                    {humanFileSize(getTotalSize(filterFragments()))}
                   </span>
                   <span>space used</span>
                 </span>
                 <span className="fragments__footer__stat">
                   <ArrowsExpandIcon />
                   <span className="fragments__footer__value">
-                    {humanFileSize(getLargestFragment(fragments))}
+                    {humanFileSize(getLargestFragment(filterFragments()))}
                   </span>
                   <span>largest fragment</span>
                 </span>
