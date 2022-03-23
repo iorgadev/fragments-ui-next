@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAtom, atom } from "jotai";
 import { userAtom, selectedFragmentAtom } from "../../pages/_app";
+import Loading from "@/components/Loading";
 import InfoIconBig from "@/components/Fragment/InfoIconBig";
 import BigCard from "@/components/Fragment/BigCard";
 import Menu from "../Menu";
@@ -125,11 +126,7 @@ function Fragments() {
             </div>
             <div className="fragments__container">
               {loading ? (
-                <div className="relative flex items-center justify-center h-full col-span-5">
-                  <div className="loader">
-                    <div className="loader__inner"></div>
-                  </div>
-                </div>
+                <Loading />
               ) : compFragments.length > 0 ? (
                 compFragments.map((fragment) => {
                   return <InfoIconBig key={fragment.id} fragment={fragment} />;
