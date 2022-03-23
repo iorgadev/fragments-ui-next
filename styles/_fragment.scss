@@ -2,7 +2,7 @@
   @apply absolute flex items-center justify-center w-full h-full;
   @apply z-20 p-20 overflow-hidden;
   @apply bg-neutral-900 bg-opacity-70;
-  animation: slide-in-bottom 0.3s ease-in-out;
+  // animation: slide-in-bottom 0.3s ease-in-out;
 
   &__container {
     @apply flex items-center justify-center w-full h-full;
@@ -43,11 +43,11 @@
     @apply p-4;
     @apply overflow-hidden;
     &__container {
-      @apply flex-grow h-full w-full;
+      // @apply flex-grow h-full w-full;
       // @apply p-2;
-      @apply bg-neutral-800;
-      @apply overflow-y-scroll;
-      @apply scrollbar-thin;
+      // @apply bg-neutral-800;
+      // @apply overflow-x-hidden;
+      @apply bg-[#1c1b1b] overflow-y-scroll scrollbar-thin;
     }
   }
 }
