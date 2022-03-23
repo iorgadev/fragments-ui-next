@@ -47,7 +47,7 @@
     @apply flex items-center space-x-2;
     & > svg {
       @apply w-6 h-6;
-      @apply text-teal-800;
+      @apply text-teal-800 cursor-pointer;
       &.active {
         @apply text-teal-400;
       }
