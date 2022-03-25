@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { userAtom } from "./_app";
-import Loading from "../components/Loading";
-import Fragments from "../components/User/Fragments";
+import Loading from "@/components/Loading";
+import Fragments from "@/components/Fragments";
 import { Auth } from "aws-amplify";
 
 const Home = () => {
@@ -19,15 +19,7 @@ const Home = () => {
 
   return (
     <div className="main">
-      {/* <div className="main__left"> */}
       <Fragments />
-      {/* <div className="flex-grow"><span>fragment data</span></div> */}
-      {/* </div> */}
-      {/* <div className="main__right">
-        <button className="bg-red-500" onClick={handleLogout}>
-          Logout
-        </button>
-      </div> */}
     </div>
   );
 };
