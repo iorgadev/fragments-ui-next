@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
-import {
-  userAtom,
-  // selectedFragmentAtom,
-  userFragmentsAtom,
-} from "../../pages/_app";
+import { userAtom, userFragmentsAtom } from "../../pages/_app";
 import { selectedFragmentAtom } from "@/components/Fragment/InfoIconBig";
 import Loading from "@/components/Loading";
 import InfoIconBig from "@/components/Fragment/InfoIconBig";
@@ -18,8 +14,6 @@ import {
 } from "../../utils/fragmentUtils";
 
 import {
-  RefreshIcon,
-  PlusIcon,
   CubeTransparentIcon,
   ChevronDownIcon,
   DocumentSearchIcon,
@@ -28,63 +22,17 @@ import {
 } from "@heroicons/react/solid";
 import {
   CubeIcon,
-  ViewGridAddIcon,
   ChartPieIcon,
   ArrowsExpandIcon,
-  UserIcon,
 } from "@heroicons/react/outline";
 
 import FilterType from "@/components/Fragment/FilterType";
 
-const filterTypesArray = [
-  {
-    type: "text/plain",
-    label: "Plain Text",
-    selected: false,
-  },
-  {
-    type: "text/markdown",
-    label: "Markdown",
-    selected: false,
-  },
-  {
-    type: "text/html",
-    label: "HTML",
-    selected: false,
-  },
-  {
-    type: "application/json",
-    label: "JSON",
-    selected: false,
-  },
-  {
-    type: "image/png",
-    label: "PNG",
-    selected: false,
-  },
-  {
-    type: "image/jpeg",
-    label: "JPEG",
-    selected: false,
-  },
-  {
-    type: "image/webp",
-    label: "WebP",
-    selected: false,
-  },
-  {
-    type: "image/gif",
-    label: "GIF",
-    selected: false,
-  },
-];
-
-// export const userFragmentsAtom = atom([]);
+import { filterTypesArray } from "@/components/Fragment/FilterType";
 
 function Fragments() {
   const [user] = useAtom(userAtom);
   const [fragments, setFragments] = useAtom(userFragmentsAtom);
-  // const [filteredFragments, setFilteredFragments] = useState([]);9
   const [loading, setLoading] = useState(false);
   const [selectedFragment] = useAtom(selectedFragmentAtom);
   const [searchString, setSearchString] = useState("");
@@ -160,7 +108,6 @@ function Fragments() {
       }
     }
 
-    // setFilteredFragments((prev) => filtered);
     return filtered;
   };
 
@@ -168,27 +115,6 @@ function Fragments() {
   const handleSortByOption = (option) => {
     setSortBy((prev) => option);
   };
-
-  // handle selecting types to filter by
-  const handleFilterTypes = (type) => {
-    const newFilterTypes = filterTypes.map((filterType) => {
-      if (filterType.type === type) {
-        filterType.selected = !filterType.selected;
-      }
-      return filterType;
-    });
-    setFilterTypes((prev) => newFilterTypes);
-  };
-  // is the filter type selected?
-  const isFilterTypeSelected = (type) => {
-    const selected = filterTypes.find((filterType) => filterType.type === type);
-    return selected.selected;
-  };
-
-  useEffect(() => {
-    console.log("Fragments.jsx useEffect()[fragments]: ", fragments);
-    // filterFragments();
-  }, [fragments]);
 
   useEffect(() => {
     if (!user || !user.signInUserSession?.idToken) return;
@@ -221,6 +147,13 @@ function Fragments() {
   // Display component if user is loaded
   return (
     <div className="fragments">
+      {/* if Filter Types drop down is showing, handle clicking outside of it to hide container */}
+      {showFilterTypes ? (
+        <div
+          className="absolute top-0 left-0 z-10 w-screen h-screen"
+          onClick={() => setShowFilterTypes((prev) => false)}
+        ></div>
+      ) : null}
       {/* Fragments Header */}
       <div className="fragments__header">
         <div className="flex items-center space-x-2">
@@ -269,30 +202,26 @@ function Fragments() {
                     className={`display ${showFilterTypes ? "open" : ""}`}
                     onClick={() => setShowFilterTypes((prev) => !prev)}
                   >
-                    Types
+                    <span>Types</span>
+                    <ChevronDownIcon className="w-5 h-5 text-teal-500" />
                   </div>
                   {showFilterTypes ? (
-                    <div className="dropdown">
-                      {filterTypes.map((filterType) => (
-                        <div
-                          key={filterType.type}
-                          className={`flex items-center space-x-2`}
-                          onClick={() => handleFilterTypes(filterType.type)}
-                        >
-                          <div
-                            className={`w-4 h-4 rounded-sm ${
-                              isFilterTypeSelected(filterType.type)
-                                ? `bg-teal-300`
-                                : `bg-red-500`
-                            }`}
-                          ></div>
-                          <span>{filterType.type}</span>
-                        </div>
+                    <div className="py-2 space-y-1 dropdown">
+                      {filterTypes.map((filterType, id) => (
+                        <FilterType
+                          key={id}
+                          filterType={filterType}
+                          filterTypes={filterTypes}
+                          setFilterTypes={setFilterTypes}
+                        />
                       ))}
                     </div>
                   ) : null}
                 </div>
-                <select onChange={(e) => handleSortByOption(e.target.value)}>
+                <select
+                  className="cursor-pointer"
+                  onChange={(e) => handleSortByOption(e.target.value)}
+                >
                   <option value="created">Date Created</option>
                   <option value="size">Fragment Size</option>
                   <option value="type">Fragment Type</option>
@@ -317,11 +246,17 @@ function Fragments() {
               {loading ? (
                 <Loading />
               ) : filterFragments().length > 0 ? (
-                filterFragments().map((fragment) => {
-                  return <InfoIconBig key={fragment.id} fragment={fragment} />;
-                })
+                <div className="grid grid-cols-6 gap-3">
+                  {filterFragments().map((fragment) => {
+                    return (
+                      <InfoIconBig key={fragment.id} fragment={fragment} />
+                    );
+                  })}
+                </div>
               ) : (
-                "0 fragments"
+                <div className="flex items-center justify-center">
+                  "0 fragments"
+                </div>
               )}
             </div>
 
