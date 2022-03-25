@@ -9,7 +9,8 @@ const getLargestFragment = (fragmentsArray) => {
 
 // given a size in kilobytes, return a human readable size
 const humanFileSize = (size) => {
-  if (size < 1024) return `${size} bytes`;
+  if (size === null || size === undefined) return `0 bytes`;
+  else if (size < 1024) return `${size} bytes`;
   const i = Math.floor(Math.log(size) / Math.log(1024));
   return (
     (size / Math.pow(1024, i)).toFixed(2) * 1 +
