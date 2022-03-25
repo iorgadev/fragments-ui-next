@@ -195,14 +195,22 @@ function Fragments() {
               </div>
               <div className="fragments__filters">
                 <div className="filtertypes">
-                  {/* <select onClick={() => setShowFilterTypes((prev) => !prev)}>
-                    <option>All Types</option>
-                  </select> */}
                   <div
                     className={`display ${showFilterTypes ? "open" : ""}`}
                     onClick={() => setShowFilterTypes((prev) => !prev)}
                   >
-                    <span>Types</span>
+                    <span>
+                      Types -{" "}
+                      <span className="font-semibold text-teal-400">
+                        {
+                          // count how many types from filterTypes are selected
+                          filterTypes.filter((type) => type.selected).length > 0
+                            ? filterTypes.filter((type) => type.selected)
+                                .length + " selected"
+                            : "All"
+                        }
+                      </span>
+                    </span>
                     <ChevronDownIcon className="w-5 h-5 text-teal-500" />
                   </div>
                   {showFilterTypes ? (
@@ -254,8 +262,8 @@ function Fragments() {
                   })}
                 </div>
               ) : (
-                <div className="flex items-center justify-center">
-                  "0 fragments"
+                <div className="flex items-center justify-center w-full h-full">
+                  0 fragments
                 </div>
               )}
             </div>
