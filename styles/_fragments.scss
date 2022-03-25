@@ -61,12 +61,12 @@
     }
 
     & > .filtertypes {
-      @apply relative w-48;
+      @apply relative w-48 z-20;
 
       & > .display {
-        @apply text-teal-500 text-sm;
-        @apply bg-neutral-800;
-        @apply border-2 border-neutral-700;
+        @apply flex items-center justify-between;
+        @apply text-teal-500 text-sm cursor-pointer;
+        @apply bg-neutral-800 border-2 border-neutral-700;
         @apply px-3 py-0.5;
         // @apply border border-green-500;
         &.open {
@@ -75,20 +75,21 @@
       }
 
       & > .dropdown {
-        @apply absolute z-10 w-full p-2;
+        @apply absolute z-10 w-full;
         @apply bg-neutral-800 border-2 border-neutral-700;
       }
     }
   }
 
   &__container {
-    @apply flex-grow;
+    @apply flex-grow relative;
     @apply h-full w-full;
+    // @apply border border-red-500;
     // @apply w-full;
     // @apply min-h-min;
-    @apply grid grid-cols-6 gap-x-3 gap-y-2 grid-rows-4;
-    // @apply items-start justify-start;
-    // @apply flex space-x-0 flex-wrap;
+    // @apply grid grid-cols-6 gap-3;
+    @apply flex space-x-0 flex-wrap;
+    @apply items-start justify-start;
 
     @apply p-4;
     @apply overflow-y-scroll;
@@ -98,11 +99,10 @@
     --scrollbar-track: #242424;
 
     grid-template-rows: auto 1fr;
+    grid-auto-rows: auto 1fr;
   }
 
   &__footer {
-    // @apply h-full;
-    // @apply flex items-end;
     &__container {
       @apply bg-teal-900 bg-opacity-20 w-full;
       @apply border-t border-teal-900 border-opacity-40;
@@ -111,7 +111,7 @@
       @apply space-x-5;
       @apply flex-none;
     }
-    // @apply uppercase text-xl;
+
     &__stat {
       @apply flex items-center space-x-1 text-teal-500;
       & > svg {
