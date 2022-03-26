@@ -2,6 +2,7 @@ import React from "react";
 
 import Loading from "@/components/Loading";
 import InfoIconBig from "@/components/Fragment/InfoIconBig";
+import NoFragments from "./NoFragments";
 
 function GridListContainer({ loading, filterFragments }) {
   return (
@@ -15,9 +16,7 @@ function GridListContainer({ loading, filterFragments }) {
           })}
         </div>
       ) : (
-        <div className="flex items-center justify-center w-full h-full">
-          0 fragments
-        </div>
+        <NoFragments />
       )}
     </div>
   );
