@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { userAtom, userFragmentsAtom } from "../pages/_app";
 import { selectedFragmentAtom } from "@/components/Fragment/InfoIconBig";
+import { selectedLinkAtom } from "@/components/Menu";
 import BigCard from "@/components/Fragment/BigCard";
 import Menu from "./Menu";
 import { CubeTransparentIcon } from "@heroicons/react/solid";
@@ -9,6 +10,8 @@ import { filterTypesArray } from "@/components/Fragment/FilterType";
 import SearchFilters from "@/components/Fragments/SearchFilters";
 import FooterStats from "./Fragments/FooterStats";
 import GridListContainer from "./Fragments/GridListContainer";
+
+import CreateNew from "@/components/Fragments/CreateNew";
 
 function Fragments() {
   const [user] = useAtom(userAtom);
@@ -20,6 +23,7 @@ function Fragments() {
   const [sortBy, setSortBy] = useState("created");
   const [showFilterTypes, setShowFilterTypes] = useState(false);
   const [filterTypes, setFilterTypes] = useState(filterTypesArray);
+  const [selectedLink] = useAtom(selectedLinkAtom);
 
   const getUserFragments = async () => {
     setLoading((prev) => true);
@@ -96,33 +100,32 @@ function Fragments() {
     setSortBy((prev) => option);
   };
 
-  useEffect(() => {
-    if (!user || !user.signInUserSession?.idToken) return;
-    console.log("Fragments.jsx useEffect()[user]: ");
-    getUserFragments();
-  }, [user]);
+  // useEffect(() => {
+  //   if (!user || !user.signInUserSession?.idToken) return;
+  //   console.log("Fragments.jsx useEffect()[user]: ");
+  //   getUserFragments();
+  // }, [user]);
 
   useEffect(() => {
-    console.log(
-      "Fragments.jsx useEffect()[filter options]: ",
-      searchString,
-      sortDirection,
-      sortBy
-    );
+    console.log("Fragments.jsx useEffect()[selectedFragment]: ", selectedLink);
+  }, [selectedLink]);
+
+  useEffect(() => {
+    // console.log(
+    //   "Fragments.jsx useEffect()[filter options]: ",
+    //   searchString,
+    //   sortDirection,
+    //   sortBy
+    // );
     filterFragments();
   }, [searchString, sortDirection, sortBy]);
 
   useEffect(() => {
-    if (fragments.length === 0) {
-      console.log("Fragments.jsx useEffect()[fragments.length]: ", fragments);
-      getUserFragments();
-    } else {
-      console.log("Fragments.jsx useEffect()[fragments.length]: ", fragments);
-    }
+    if (fragments.length === 0) getUserFragments();
   }, []);
 
-  // Set to Loading if user is not loaded yet
-  if (!user || !user.username) return <div>loading...</div>;
+  // // Set to Loading if user is not loaded yet
+  // if (!user || !user.username) return <div>loading...</div>;
 
   // Display component if user is loaded
   return (
@@ -148,7 +151,7 @@ function Fragments() {
         </div>
       </div>
 
-      {/* Fragments Container */}
+      {/* App Container */}
       <div className="relative flex flex-grow overflow-hidden">
         {/* inner page */}
         {selectedFragment.id ? <BigCard /> : null}
@@ -171,10 +174,13 @@ function Fragments() {
               sortDirection={sortDirection}
               setSortDirection={setSortDirection}
             />
-            <GridListContainer
-              loading={loading}
-              filterFragments={filterFragments}
-            />
+            {selectedLink === "all" ? (
+              <GridListContainer
+                loading={loading}
+                filterFragments={filterFragments}
+              />
+            ) : null}
+            {selectedLink === "create" ? <CreateNew /> : null}
             <FooterStats filterFragments={filterFragments} />
           </div>
         </div>
