@@ -1,0 +1,45 @@
+.create {
+  @apply relative flex-grow p-4 overflow-y-scroll scrollbar-thin;
+  @apply flex space-x-3 overflow-hidden;
+  --scrollbar-thumb: #29e6cd;
+  --scrollbar-track: #242424;
+
+  &__container {
+    @apply flex-none flex flex-col items-center justify-start w-full h-full pt-10 bg-teal-900 border-4 border-teal-700 border-dashed bg-opacity-10;
+    @apply transition-all duration-500;
+    & > * {
+      @apply pointer-events-none;
+    }
+    &.mini {
+      @apply w-3/5;
+    }
+    &.dragging {
+      @apply border-solid border-teal-500;
+    }
+  }
+
+  &__dropped {
+    @apply w-0 p-2 flex flex-col space-y-2;
+    @apply transition-all duration-500;
+    // @apply border-2 border-teal-900 border-opacity-10;
+    @apply scrollbar-thin overflow-y-scroll overflow-x-hidden;
+    --scrollbar-thumb: #29e6cd;
+    --scrollbar-track: #242424;
+
+    &.open {
+      @apply w-full;
+    }
+
+    &__file {
+      @apply flex space-x-2 items-center;
+      @apply text-xs text-teal-300 pointer-events-none whitespace-nowrap;
+      // @apply bg-slate-400;
+    }
+  }
+
+  &__item {
+    @apply px-1 py-0.5 bg-neutral-900 rounded-sm;
+    @apply h-full;
+    @apply flex flex-col items-center justify-center;
+  }
+}

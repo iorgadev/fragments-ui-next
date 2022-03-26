@@ -3,7 +3,7 @@
 
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+// @tailwind utilities;
 
 html,
 body {
@@ -36,3 +36,6 @@ a {
 @import "./menu";
 @import "./fragments";
 @import "./fragment";
+@import "./create";
+
+@tailwind utilities;
