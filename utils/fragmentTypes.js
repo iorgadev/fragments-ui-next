@@ -62,6 +62,16 @@ const fragmentColors = {
   "image/webp": "text-red-400",
   "image/gif": "text-gray-400",
 };
+const backgroundColors = {
+  "text/plain": "#1e293b",
+  "text/markdown": "#854d0e",
+  "text/html": "#6b21a8",
+  "application/json": "#9a3412",
+  "image/png": "#166534",
+  "image/jpeg": "#1e40af",
+  "image/webp": "#991b1b",
+  "image/gif": "#262626",
+};
 
 /**
  * Checks if the given mime type is a valid Fragment type
@@ -70,6 +80,22 @@ const fragmentColors = {
  */
 const isValidType = (mimeType) => {
   return Object.keys(fragmentTypes).includes(mimeType);
+};
+
+/**
+ * Returns all valid mime types
+ * @returns {Array<string>} list of valid mime types
+ */
+const getAllMimeTypes = () => {
+  return Object.keys(fragmentTypes);
+};
+
+/**
+ * Returns all valid extensions
+ * @returns {Array<string>} list of valid extensions
+ */
+const getAllExtensions = () => {
+  return Object.values(fragmentTypes).map((type) => type.extension);
 };
 
 /**
@@ -142,6 +168,7 @@ const getFileType = (filename) => {
 module.exports = {
   fragmentTypes,
   fragmentColors,
+  backgroundColors,
   isValidType,
   getMimeTypeExtension,
   getExtensionMimeType,
@@ -150,4 +177,6 @@ module.exports = {
   isSupportedConversionExtension,
   isSupportedConversionMimeType,
   getFileType,
+  getAllMimeTypes,
+  getAllExtensions,
 };
