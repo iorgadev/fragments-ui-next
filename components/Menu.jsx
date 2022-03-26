@@ -1,6 +1,6 @@
 import React from "react";
-import { useAtom } from "jotai";
-import { selectedLinkAtom, userAtom, userFragmentsAtom } from "@/pages/_app";
+import { useAtom, atom } from "jotai";
+import { userAtom, userFragmentsAtom } from "@/pages/_app";
 import { fragmentColors } from "@/utils/fragmentTypes";
 
 import { ChevronDownIcon } from "@heroicons/react/solid";
@@ -14,6 +14,8 @@ import {
   PhotographIcon,
 } from "@heroicons/react/outline";
 
+export const selectedLinkAtom = atom("all");
+
 function Menu({ getUserFragments, loading }) {
   const [user] = useAtom(userAtom);
   const [selectedLink, setSelectedLink] = useAtom(selectedLinkAtom);
@@ -22,7 +24,11 @@ function Menu({ getUserFragments, loading }) {
   return (
     <div className="menu">
       <div className="menu__container">
-        <div className={`menu__item ${selectedLink === "all" ? `active` : ``}`}>
+        {/* All Fragments Link */}
+        <div
+          className={`menu__item ${selectedLink === "all" ? `active` : ``}`}
+          onClick={() => setSelectedLink((prev) => "all")}
+        >
           <CubeIcon className="flex-none" />
           <span className="whitespace-nowrap">All Fragments </span>
           <span className="px-1 py-0.5 text-xs bg-teal-900 rounded-md">
@@ -35,11 +41,18 @@ function Menu({ getUserFragments, loading }) {
             />
           </div>
         </div>
-        <div className="menu__item">
+
+        {/* Create Fragments Link */}
+        <div
+          className={`menu__item  ${selectedLink === "create" ? `active` : ``}`}
+          onClick={() => setSelectedLink((prev) => "create")}
+        >
           <ViewGridAddIcon />
           <span>Create Fragment</span>
-          <ChevronDownIcon className="w-4 h-4" />
+          {/* <ChevronDownIcon className="w-4 h-4" /> */}
         </div>
+
+        {/* Create Fragments By Type Links */}
         <ul className="menu__types">
           <li className="type">
             <DocumentTextIcon />
