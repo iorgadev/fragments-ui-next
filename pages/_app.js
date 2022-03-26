@@ -4,8 +4,6 @@ import "../styles/globals.scss";
 import SignIn from "../components/SignIn";
 
 export const userAtom = atom({});
-export const selectedLinkAtom = atom("all");
-// export const selectedFragmentAtom = atom({});
 export const userFragmentsAtom = atom([]);
 
 function MyApp({ Component, pageProps }) {
