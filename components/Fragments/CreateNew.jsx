@@ -1,6 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { fragmentTypes, getAllExtensions } from "@/utils/fragmentTypes";
+import {
+  fragmentTypes,
+  getAllExtensions,
+  isValidType,
+} from "@/utils/fragmentTypes";
 import { useAtom } from "jotai";
 import { userAtom } from "@/pages/_app";
 import {
@@ -10,7 +14,12 @@ import {
   backgroundColors,
 } from "@/utils/fragmentTypes";
 import { humanFileSize } from "@/utils/fragmentUtils";
-import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
+import {
+  CheckCircleIcon,
+  XCircleIcon,
+  ViewGridIcon,
+  DocumentIcon,
+} from "@heroicons/react/solid";
 
 function CreateNew() {
   const [user] = useAtom(userAtom);
@@ -20,6 +29,7 @@ function CreateNew() {
   const [isDragging, setIsDragging] = useState(false);
   const [progress, setProgress] = useState(0);
   const [filesDropped, setFilesDropped] = useState(false);
+  const droppedFilesRef = useRef();
 
   const dragOver = (e) => {
     e.preventDefault();
@@ -38,25 +48,27 @@ function CreateNew() {
 
   const addToListWithDelay = (file, delay) => {
     setTimeout(() => {
-      // const response = await fetch(
-      //   `${process.env.NEXT_PUBLIC_API_URL}/v1/fragments`,
-      //   {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": getExtensionMimeType(
-      //         getFileType(file.name)
-      //       ),
-      //       Authorization: `Bearer ${user.signInUserSession.idToken.jwtToken}`,
-      //     },
-      //     // onUploadProgress: (progressEvent) => {
-      //     //   setProgress(
-      //     //     Math.round((progressEvent.loaded * 100) / progressEvent.total)
-      //     //   );
-      //     // },
-      //     body: file,
-      //   }
-      // );
+      if (isValidType(file.type)) {
+        const response = fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/v1/fragments`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": getExtensionMimeType(getFileType(file.name)),
+              Authorization: `Bearer ${user.signInUserSession.idToken.jwtToken}`,
+            },
+            // onUploadProgress: (progressEvent) => {
+            //   setProgress(
+            //     Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            //   );
+            // },
+            body: file,
+          }
+        );
+      }
       setFiles((prev) => [...prev, file]);
+      // scroll to the bottom of the droppedFilesRef div
+      droppedFilesRef.current.scrollTop = droppedFilesRef.current.scrollHeight;
     }, delay);
   };
 
@@ -118,31 +130,65 @@ function CreateNew() {
         </div>
       </div>
       {filesDropped && files.length > 0 ? (
-        <div className={`create__dropped ${filesDropped ? `open` : ``}`}>
-          {files.map((file, i) => {
-            const mimeType = getExtensionMimeType(getFileType(file.name));
-            const textColor = fragmentColors[mimeType];
-            const backgroundColor = backgroundColors[mimeType];
-            return (
-              <div key={i} className="create__dropped__file">
-                <div
-                  className={`relative w-10 h-10 flex-none flex items-center justify-center ${textColor} rounded-md`}
-                  style={{ backgroundColor: backgroundColor }}
-                >
-                  <span className="relative font-bold uppercase -top-1">
-                    {getFileType(file.name)}
-                  </span>
-                  <CheckCircleIcon className="absolute w-4 h-4 text-green-400 -bottom-0.5 -right-1" />
+        <div className="relative flex flex-col space-y-2 overflow-hidden">
+          <div
+            className={`create__dropped ${filesDropped ? `open` : ``}`}
+            ref={droppedFilesRef}
+          >
+            {files.map((file, i) => {
+              const mimeType = getExtensionMimeType(getFileType(file.name));
+              const textColor = fragmentColors[mimeType];
+              const backgroundColor = backgroundColors[mimeType];
+              const validType = isValidType(mimeType);
+              return (
+                <div key={i} className="create__dropped__file">
+                  <div
+                    className={`relative w-14 h-14 flex-none flex items-center justify-center ${textColor} rounded-md`}
+                    // style={{ backgroundColor: backgroundColor }}
+                  >
+                    <DocumentIcon
+                      className={`absolute w-full h-full -top-1 `}
+                      style={{ color: validType ? backgroundColor : "red" }}
+                    />
+                    <span
+                      className={`relative font-bold uppercase ${
+                        validType ? `text-teal-50` : `text-red-200`
+                      } -top-1`}
+                    >
+                      {getFileType(file.name)}
+                    </span>
+                    {validType ? (
+                      <CheckCircleIcon className="absolute w-4 h-4 text-teal-300 right-1 bottom-1" />
+                    ) : (
+                      <XCircleIcon className="absolute w-4 h-4 text-red-300 right-1 bottom-1" />
+                    )}
+                  </div>
+                  <div className="flex flex-col px-1">
+                    <span
+                      className={`text-sm ${
+                        validType ? textColor : `text-red-600`
+                      }`}
+                    >
+                      {file.name}
+                    </span>
+                    <span
+                      className={`text-xs ${
+                        validType ? `text-neutral-400` : `text-red-300`
+                      }`}
+                    >
+                      {validType
+                        ? humanFileSize(file.size) + " uploaded"
+                        : "Failed, not supported"}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-sm">{file.name}</span>
-                  <span className="text-xs text-orange-400">
-                    {humanFileSize(file.size)}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+          <div className="flex items-center justify-center flex-none h-12 p-2 space-x-1 bg-teal-500">
+            <ViewGridIcon className="w-8 h-8 text-teal-300" />
+            <span className="text-xl text-teal-100">View New Fragments</span>
+          </div>
         </div>
       ) : null}
     </div>
