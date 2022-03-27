@@ -5,7 +5,7 @@ import { selectedFragmentAtom } from "@/components/Fragment/InfoIconBig";
 import { selectedLinkAtom } from "@/components/Menu";
 import BigCard from "@/components/Fragment/BigCard";
 import Menu from "./Menu";
-import { CubeTransparentIcon } from "@heroicons/react/solid";
+import { CubeTransparentIcon, UserIcon } from "@heroicons/react/solid";
 import { filterTypesArray } from "@/components/Fragment/FilterType";
 import SearchFilters from "@/components/Fragments/SearchFilters";
 import FooterStats from "./Fragments/FooterStats";
@@ -148,6 +148,17 @@ function Fragments() {
         <div className="fragments__header__icons">
           {/* <PlusIcon /> */}
           {/* <RefreshIcon onClick={() => getUserFragments()} /> */}
+          {/* <div className="flex items-center justify-between w-full"> */}
+          <div className="flex items-center flex-none space-x-2">
+            <UserIcon className="w-6 h-6 p-1 text-teal-200 bg-teal-700 rounded-md" />
+            <span className="text-sm font-bold text-teal-200 uppercase">
+              {user.username}
+            </span>
+          </div>
+          <span className="text-xs uppercase text-neutral-400 font-semibold bg-neutral-900 py-0.5 px-1 rounded-md flex-none">
+            logout
+          </span>
+          {/* </div> */}
         </div>
       </div>
 
