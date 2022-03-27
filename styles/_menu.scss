@@ -27,18 +27,23 @@
   &__types {
     @apply flex flex-col space-y-3;
     @apply text-base;
+    @apply bg-teal-900 bg-opacity-10 py-5 rounded-md;
 
     & > li {
       @apply flex items-center justify-start space-x-2;
       @apply uppercase text-sm;
-      @apply pl-14;
+      @apply pl-12;
       & > .file {
         @apply lowercase text-center text-xs py-1 rounded-md w-[5ch] font-bold;
       }
     }
+    & > li.title {
+      @apply pl-3 font-bold;
+      // @apply border-2 border-teal-900;
+    }
     & > li.type {
       @apply text-base font-bold;
-      @apply pl-6;
+      @apply pl-5;
       @apply text-teal-500;
       &:not(:first-child) {
         @apply mt-5;

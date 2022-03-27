@@ -19,9 +19,10 @@
   }
 
   &__dropped {
-    @apply w-0 p-2 flex flex-col space-y-2;
+    @apply w-0 p-2 flex flex-col space-y-2 flex-grow;
     @apply transition-all duration-500;
     // @apply border-2 border-teal-900 border-opacity-10;
+    @apply bg-green-900 bg-opacity-10;
     @apply scrollbar-thin overflow-y-scroll overflow-x-hidden;
     --scrollbar-thumb: #29e6cd;
     --scrollbar-track: #242424;
@@ -31,7 +32,7 @@
     }
 
     &__file {
-      @apply flex space-x-2 items-center;
+      @apply flex space-x-0 items-center;
       @apply text-xs text-teal-300 pointer-events-none whitespace-nowrap;
       // @apply bg-slate-400;
     }
