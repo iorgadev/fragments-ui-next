@@ -49,11 +49,11 @@ function Menu({ getUserFragments, loading }) {
         >
           <ViewGridAddIcon />
           <span>Create Fragment</span>
-          {/* <ChevronDownIcon className="w-4 h-4" /> */}
         </div>
 
         {/* Create Fragments By Type Links */}
         <ul className="menu__types">
+          <li className="title">Supported Types:</li>
           <li className="type">
             <DocumentTextIcon />
             <span>TEXT</span>
@@ -131,17 +131,6 @@ function Menu({ getUserFragments, loading }) {
             <span>gif</span>
           </li>
         </ul>
-      </div>
-      <div className="menu__footer">
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center flex-grow space-x-2">
-            <UserIcon className="w-6 h-6 p-1 text-teal-200 bg-teal-700 rounded-md" />
-            <span className="text-sm font-bold uppercase">{user.username}</span>
-          </div>
-          <span className="text-xs uppercase text-neutral-400 font-semibold bg-neutral-900 py-0.5 px-1 rounded-md flex-none">
-            logout
-          </span>
-        </div>
       </div>
     </div>
   );
