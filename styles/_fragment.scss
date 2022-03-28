@@ -69,6 +69,9 @@
       @apply h-full;
       @apply bg-[#1c1b1b] overflow-y-scroll scrollbar-thin;
 
+      & > * {
+      }
+
       &__image {
         @apply w-full h-full;
         @apply flex items-center justify-center;
