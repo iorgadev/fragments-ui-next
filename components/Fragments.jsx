@@ -106,9 +106,9 @@ function Fragments() {
   //   getUserFragments();
   // }, [user]);
 
-  useEffect(() => {
-    console.log("Fragments.jsx useEffect()[selectedFragment]: ", selectedLink);
-  }, [selectedLink]);
+  // useEffect(() => {
+  //   console.log("Fragments.jsx useEffect()[selectedFragment]: ", selectedLink);
+  // }, [selectedLink]);
 
   useEffect(() => {
     // console.log(
@@ -165,7 +165,7 @@ function Fragments() {
       {/* App Container */}
       <div className="relative flex flex-grow overflow-hidden">
         {/* inner page */}
-        {selectedFragment.id ? <BigCard /> : null}
+        {selectedFragment !== null && selectedFragment?.id ? <BigCard /> : null}
 
         {/* menu */}
         <Menu getUserFragments={getUserFragments} loading={loading} />
