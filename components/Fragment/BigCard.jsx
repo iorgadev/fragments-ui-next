@@ -20,11 +20,14 @@ import {
   DocumentIcon,
   ArrowsExpandIcon,
   ColorSwatchIcon,
+  ArrowSmRightIcon,
+  XCircleIcon,
 } from "@heroicons/react/solid";
 import Loading from "@/components/Loading";
 import Stat from "./Stat";
 import { humanFileSize, humanDate } from "@/utils/fragmentUtils";
 import Edit from "./Edit";
+import Delete from "./Delete";
 
 function BigCard() {
   const [user] = useAtom(userAtom);
@@ -128,7 +131,29 @@ function BigCard() {
           <Stat
             icon={<DocumentIcon />}
             label="Type"
-            value={selectedFragment.type}
+            value={
+              conversionExtension ? (
+                <>
+                  <div className="flex items-center space-x-2">
+                    <span>{selectedFragment.type}</span>
+                    <div className="flex items-center text-xs text-orange-200">
+                      <ArrowSmRightIcon className="w-4 h-4" />
+                    </div>
+
+                    <span>.{conversionExtension}</span>
+                    <XCircleIcon
+                      className="w-5 h-5 text-teal-900 bg-teal-500 rounded-full cursor-pointer"
+                      onClick={() => {
+                        setAction("");
+                        setConversionExtension((prev) => "");
+                      }}
+                    />
+                  </div>
+                </>
+              ) : (
+                <span className="h-7">{selectedFragment.type}</span>
+              )
+            }
           />
 
           <Stat
@@ -151,6 +176,7 @@ function BigCard() {
                     className="conversion"
                     onClick={(e) => {
                       e.stopPropagation();
+                      setAction("");
                       setConversionExtension(getMimeTypeExtension(type));
                     }}
                   >
@@ -186,7 +212,7 @@ function BigCard() {
               <PencilAltIcon className={action === "edit" ? `active` : ``} />
             </div>
 
-            <div className="icon">
+            <div className="icon" onClick={() => setAction((prev) => "delete")}>
               <TrashIcon className={action === "delete" ? `active` : ``} />
             </div>
           </div>
@@ -201,6 +227,11 @@ function BigCard() {
                   language="text"
                   style={stackoverflowDark}
                   wrapLongLines={true}
+                  lineNumberStyle={{
+                    fontWeight: "bold",
+                    borderRight: "1px solid #ccc",
+                    marginRight: "1rem",
+                  }}
                 >
                   {fragmentData}
                 </SyntaxHighlighter>
@@ -211,6 +242,12 @@ function BigCard() {
                   language="markdown"
                   style={stackoverflowDark}
                   wrapLongLines={true}
+                  showLineNumbers={true}
+                  lineNumberStyle={{
+                    fontWeight: "bold",
+                    borderRight: "1px solid #ccc",
+                    marginRight: "1rem",
+                  }}
                 >
                   {fragmentData}
                 </SyntaxHighlighter>
@@ -223,7 +260,7 @@ function BigCard() {
                   // customStyle={{ width: "100%" }}
                   wrapLongLines={true}
                   // useInlineStyles={false}
-                  // showLineNumbers={true}
+                  showLineNumbers={true}
                   lineNumberStyle={{
                     fontWeight: "bold",
                     borderRight: "1px solid #ccc",
@@ -239,6 +276,12 @@ function BigCard() {
                   language="json"
                   style={stackoverflowDark}
                   wrapLongLines={true}
+                  // showLineNumbers={true}
+                  lineNumberStyle={{
+                    fontWeight: "bold",
+                    borderRight: "1px solid #ccc",
+                    marginRight: "1rem",
+                  }}
                 >
                   {fragmentData}
                 </SyntaxHighlighter>
@@ -258,6 +301,8 @@ function BigCard() {
             </div>
           ) : action === "edit" ? (
             <Edit fragment={selectedFragment} setAction={setAction} />
+          ) : action === "delete" ? (
+            <Delete fragment={selectedFragment} setAction={setAction} />
           ) : null}
         </div>
       </div>
