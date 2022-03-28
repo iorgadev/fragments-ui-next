@@ -191,7 +191,9 @@ function Fragments() {
                 filterFragments={filterFragments}
               />
             ) : null}
-            {selectedLink === "create" ? <CreateNew /> : null}
+            {selectedLink === "create" ? (
+              <CreateNew getUserFragments={getUserFragments} />
+            ) : null}
             <FooterStats filterFragments={filterFragments} />
           </div>
         </div>
