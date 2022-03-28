@@ -1,0 +1,23 @@
+.edit {
+  @apply w-full h-full flex p-3;
+  @apply overflow-hidden;
+
+  &__container {
+    @apply border-4 border-dashed border-teal-800 w-full h-full flex flex-col items-center justify-center;
+    animation: slide-in-from-right 0.3s ease-in-out;
+    & > * {
+      @apply pointer-events-none;
+    }
+    &.dragging {
+      @apply border-solid border-teal-300;
+    }
+  }
+}
+@keyframes slide-in-from-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}

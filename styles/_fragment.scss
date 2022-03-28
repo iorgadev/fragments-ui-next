@@ -14,7 +14,8 @@
 
   // stats container
   &__stats {
-    @apply w-72 h-full bg-zinc-900 p-3 flex flex-col space-y-3;
+    @apply w-72 h-full bg-neutral-900 p-3 flex flex-col space-y-3 flex-none;
+    @apply border-r border-neutral-800;
   }
   // single stat
   &__stat {
@@ -23,7 +24,7 @@
       @apply border-b-2 border-neutral-800;
     }
     &__details {
-      @apply flex flex-col justify-center;
+      @apply flex flex-col justify-center w-full;
     }
     &__label {
       @apply text-sm font-bold text-teal-600 uppercase;
@@ -36,17 +37,36 @@
     }
   }
 
+  .conversion {
+    @apply flex items-center justify-between p-1 cursor-pointer;
+    &:hover {
+      @apply bg-teal-900 bg-opacity-10;
+    }
+    &__item {
+      @apply flex items-center flex-grow space-x-2;
+    }
+    &:hover .eye {
+      @apply opacity-100;
+    }
+  }
+
+  .eye {
+    @apply w-4 h-4 transition-all duration-200 opacity-0 text-teal-200;
+  }
+
   // data container
   &__data {
     @apply relative flex-grow h-full;
     @apply flex flex-col;
-    @apply p-4;
+    @apply pl-4 pr-6 py-4;
     // @apply overflow-hidden;
+    // @apply overflow-x-hidden;
     &__container {
       // @apply flex-grow h-full w-full;
       // @apply p-2;
       // @apply bg-neutral-800;
       // @apply overflow-x-hidden;
+      @apply h-full;
       @apply bg-[#1c1b1b] overflow-y-scroll scrollbar-thin;
 
       &__image {
@@ -62,14 +82,41 @@
   }
 }
 
-.close-icon {
-  @apply w-8 h-8 p-1 text-neutral-100 bg-neutral-700 cursor-pointer;
-  @apply border-2 border-teal-700;
-  &:hover {
-    @apply bg-neutral-500 text-teal-50;
+.actions {
+  @apply absolute top-0 right-0 flex flex-col space-y-2;
+  & > .icon {
+    @apply relative -top-5 -right-5 text-teal-100 transition-all duration-100 scale-100;
+    & > svg {
+      @apply w-10 h-10 p-1 bg-teal-900 cursor-pointer;
+      @apply border-2 border-teal-700;
+      &:hover {
+        @apply bg-teal-700 text-teal-50;
+      }
+      &:active {
+        @apply scale-90;
+      }
+      animation: fade-in 0.7s ease-in-out;
+      &.close {
+        @apply text-neutral-100 bg-neutral-700;
+        &:hover {
+          @apply bg-neutral-500 text-teal-50;
+        }
+      }
+      &.active {
+        @apply text-orange-500;
+      }
+    }
   }
-  animation: fade-in 0.7s ease-in-out;
 }
+
+// .close-icon {
+//   @apply w-10 h-10 p-1 text-neutral-100 bg-neutral-700 cursor-pointer;
+//   @apply border-2 border-teal-700;
+//   &:hover {
+//     @apply bg-neutral-500 text-teal-50;
+//   }
+//   animation: fade-in 0.7s ease-in-out;
+// }
 @keyframes fade-in {
   from {
     opacity: 0;
