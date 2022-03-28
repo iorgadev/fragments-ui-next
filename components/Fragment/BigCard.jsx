@@ -2,14 +2,21 @@ import { useState, useEffect } from "react";
 import { useAtom } from "jotai";
 import { userAtom } from "@/pages/_app";
 import { selectedFragmentAtom } from "@/components/Fragment/InfoIconBig";
-import { XIcon } from "@heroicons/react/solid";
-import { getValidConversionTypes } from "@/utils/fragmentTypes";
+import {
+  getValidConversionTypes,
+  getMimeTypeExtension,
+  getExtensionMimeType,
+  backgroundColors,
+} from "@/utils/fragmentTypes";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { stackoverflowDark } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 import {
+  EyeIcon,
+  XIcon,
+  PencilAltIcon,
+  TrashIcon,
   FingerPrintIcon,
   ClockIcon,
-  PencilAltIcon,
   DocumentIcon,
   ArrowsExpandIcon,
   ColorSwatchIcon,
@@ -17,22 +24,28 @@ import {
 import Loading from "@/components/Loading";
 import Stat from "./Stat";
 import { humanFileSize, humanDate } from "@/utils/fragmentUtils";
+import Edit from "./Edit";
 
 function BigCard() {
   const [user] = useAtom(userAtom);
   const [fragmentData, setFragmentData] = useState();
   const [loading, setLoading] = useState(false);
   const [selectedFragment, setSelectedFragment] = useAtom(selectedFragmentAtom);
+  const [conversionExtension, setConversionExtension] = useState("");
+  const [fragmentMimeType, setFragmentMimeType] = useState("");
+  const [action, setAction] = useState("");
 
   const handleCloseFragmentData = (e) => {
     e.stopPropagation();
     setSelectedFragment({});
   };
 
-  const fetchFragmentData = async (fragment) => {
+  const fetchFragmentData = async (fragment, ext = "") => {
     setLoading((prev) => true);
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/fragments/${fragment.id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/v1/fragments/${fragment.id}${
+        ext.length > 0 ? "." + ext : ""
+      }`,
       {
         method: "GET",
         headers: {
@@ -61,8 +74,23 @@ function BigCard() {
       data = await Buffer.from(data).toString("base64");
     }
     setLoading((prev) => false);
+    setFragmentMimeType((prev) =>
+      conversionExtension.length > 0
+        ? getExtensionMimeType(conversionExtension)
+        : selectedFragment.type
+    );
     setFragmentData(data);
   };
+
+  useEffect(() => {
+    if (selectedFragment.id) {
+      fetchFragmentData(selectedFragment, conversionExtension);
+    }
+  }, [conversionExtension]);
+
+  useEffect(() => {
+    console.log("Fragment Type: ", fragmentMimeType);
+  }, [fragmentMimeType]);
 
   useEffect(() => {
     if (!selectedFragment) return;
@@ -77,6 +105,7 @@ function BigCard() {
           e.stopPropagation();
         }}
       >
+        {/* Stats */}
         <div className="fragment__stats">
           <Stat
             icon={<FingerPrintIcon />}
@@ -111,23 +140,62 @@ function BigCard() {
           <Stat
             icon={<ColorSwatchIcon />}
             label="Conversions"
-            value={getValidConversionTypes(selectedFragment.type).join(", ")}
+            value={getValidConversionTypes(selectedFragment.type).map(
+              (type, i) => {
+                const mainType = type.split("/")[0];
+                const subType = type.split("/")[1];
+
+                return (
+                  <div
+                    key={i}
+                    className="conversion"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setConversionExtension(getMimeTypeExtension(type));
+                    }}
+                  >
+                    <div className="conversion__item">
+                      <span
+                        className="p-1 font-semibold uppercase rounded-sm"
+                        style={{ backgroundColor: backgroundColors[type] }}
+                      >
+                        {mainType}
+                      </span>
+                      <span className="uppercase">{subType}</span>
+                    </div>
+                    <EyeIcon className="eye" />
+                  </div>
+                );
+              }
+            )}
           />
         </div>
+
+        {/* Fragment Data + Actions */}
         <div className="fragment__data">
-          <div
-            className="absolute top-0 right-0"
-            onClick={(e) => handleCloseFragmentData(e)}
-          >
-            <span className="relative -top-5 -right-5">
-              <XIcon className="close-icon" />
-            </span>
+          <div className="actions">
+            <div className="icon" onClick={(e) => handleCloseFragmentData(e)}>
+              <XIcon className="close" />
+            </div>
+
+            <div className="icon" onClick={() => setAction((prev) => "")}>
+              <EyeIcon className={action === "" ? `active` : ``} />
+            </div>
+
+            <div className="icon" onClick={() => setAction((prev) => "edit")}>
+              <PencilAltIcon className={action === "edit" ? `active` : ``} />
+            </div>
+
+            <div className="icon">
+              <TrashIcon className={action === "delete" ? `active` : ``} />
+            </div>
           </div>
+
           {loading ? (
             <Loading />
-          ) : (
+          ) : action === "" ? (
             <div className="fragment__data__container">
-              {selectedFragment.type === "text/plain" ? (
+              {fragmentMimeType === "text/plain" ? (
                 // <pre>{fragmentData}</pre>
                 <SyntaxHighlighter
                   language="text"
@@ -138,7 +206,7 @@ function BigCard() {
                 </SyntaxHighlighter>
               ) : null}
 
-              {selectedFragment.type === "text/markdown" ? (
+              {fragmentMimeType === "text/markdown" ? (
                 <SyntaxHighlighter
                   language="markdown"
                   style={stackoverflowDark}
@@ -148,7 +216,7 @@ function BigCard() {
                 </SyntaxHighlighter>
               ) : null}
 
-              {selectedFragment.type === "text/html" ? (
+              {fragmentMimeType === "text/html" ? (
                 <SyntaxHighlighter
                   language="html"
                   style={stackoverflowDark}
@@ -166,7 +234,7 @@ function BigCard() {
                 </SyntaxHighlighter>
               ) : null}
 
-              {selectedFragment.type === "application/json" ? (
+              {fragmentMimeType === "application/json" ? (
                 <SyntaxHighlighter
                   language="json"
                   style={stackoverflowDark}
@@ -176,10 +244,10 @@ function BigCard() {
                 </SyntaxHighlighter>
               ) : null}
 
-              {selectedFragment.type === "image/png" ||
-              selectedFragment.type === "image/jpeg" ||
-              selectedFragment.type === "image/webp" ||
-              selectedFragment.type === "image/gif" ? (
+              {fragmentMimeType === "image/png" ||
+              fragmentMimeType === "image/jpeg" ||
+              fragmentMimeType === "image/webp" ||
+              fragmentMimeType === "image/gif" ? (
                 <div className="fragment__data__container__image">
                   <img
                     src={`data:image/png;base64,${fragmentData}`}
@@ -188,7 +256,9 @@ function BigCard() {
                 </div>
               ) : null}
             </div>
-          )}
+          ) : action === "edit" ? (
+            <Edit fragment={selectedFragment} setAction={setAction} />
+          ) : null}
         </div>
       </div>
     </div>
