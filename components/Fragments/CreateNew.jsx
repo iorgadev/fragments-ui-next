@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 import {
   fragmentTypes,
   getAllExtensions,
@@ -7,6 +6,7 @@ import {
 } from "@/utils/fragmentTypes";
 import { useAtom } from "jotai";
 import { userAtom } from "@/pages/_app";
+import { selectedLinkAtom } from "@/components/Menu";
 import {
   getFileType,
   getExtensionMimeType,
@@ -21,7 +21,7 @@ import {
   DocumentIcon,
 } from "@heroicons/react/solid";
 
-function CreateNew() {
+function CreateNew({ getUserFragments }) {
   const [user] = useAtom(userAtom);
   const [files, setFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -30,6 +30,7 @@ function CreateNew() {
   const [progress, setProgress] = useState(0);
   const [filesDropped, setFilesDropped] = useState(false);
   const droppedFilesRef = useRef();
+  const [selectedLink, setSelectedLink] = useAtom(selectedLinkAtom);
 
   const dragOver = (e) => {
     e.preventDefault();
@@ -46,9 +47,9 @@ function CreateNew() {
     setIsDragging(false);
   };
 
-  const addToListWithDelay = (file, delay) => {
+  const addToListWithDelay = (file, delay, last = false) => {
     setTimeout(() => {
-      if (isValidType(file.type)) {
+      if (isValidType(getExtensionMimeType(getFileType(file.name)))) {
         const response = fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/v1/fragments`,
           {
@@ -69,6 +70,9 @@ function CreateNew() {
       setFiles((prev) => [...prev, file]);
       // scroll to the bottom of the droppedFilesRef div
       droppedFilesRef.current.scrollTop = droppedFilesRef.current.scrollHeight;
+      if (last) {
+        getUserFragments();
+      }
     }, delay);
   };
 
@@ -83,7 +87,11 @@ function CreateNew() {
     var droppedFiles = e.dataTransfer.files;
     var filesArray = [];
     for (var i = 0; i < droppedFiles.length; i++) {
-      addToListWithDelay(droppedFiles[i], i * 300);
+      addToListWithDelay(
+        droppedFiles[i],
+        i * 300,
+        i === droppedFiles.length - 1
+      );
     }
     return;
   };
@@ -99,13 +107,7 @@ function CreateNew() {
         onDragLeave={dragLeave}
         onDrop={handleDrop}
       >
-        <Image
-          src="/images/upload-fragments.png"
-          alt="No Fragments"
-          width={256}
-          height={256}
-          layout="intrinsic"
-        />
+        <img src="/images/upload-fragments.png" alt="No Fragments" />
 
         <span className="text-3xl font-semibold text-teal-300">
           Create New Fragments
@@ -130,7 +132,7 @@ function CreateNew() {
         </div>
       </div>
       {filesDropped && files.length > 0 ? (
-        <div className="relative flex flex-col space-y-2 overflow-hidden">
+        <div className="relative flex flex-col w-full space-y-2 overflow-hidden">
           <div
             className={`create__dropped ${filesDropped ? `open` : ``}`}
             ref={droppedFilesRef}
@@ -185,7 +187,10 @@ function CreateNew() {
               );
             })}
           </div>
-          <div className="flex items-center justify-center flex-none h-12 p-2 space-x-1 bg-teal-500">
+          <div
+            className="flex items-center justify-center flex-none h-12 p-2 space-x-1 bg-teal-500 rounded-md cursor-pointer"
+            onClick={() => setSelectedLink("all")}
+          >
             <ViewGridIcon className="w-8 h-8 text-teal-300" />
             <span className="text-xl text-teal-100">View New Fragments</span>
           </div>
