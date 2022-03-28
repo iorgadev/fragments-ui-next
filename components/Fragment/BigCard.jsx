@@ -130,7 +130,16 @@ function BigCard() {
 
           <Stat
             icon={<DocumentIcon />}
-            label="Type"
+            label={
+              <>
+                <span>Type</span>
+                {conversionExtension ? (
+                  <span className="ml-2 text-orange-300">(Converted)</span>
+                ) : (
+                  ``
+                )}
+              </>
+            }
             value={
               conversionExtension ? (
                 <>
@@ -222,16 +231,10 @@ function BigCard() {
           ) : action === "" ? (
             <div className="fragment__data__container">
               {fragmentMimeType === "text/plain" ? (
-                // <pre>{fragmentData}</pre>
                 <SyntaxHighlighter
                   language="text"
                   style={stackoverflowDark}
                   wrapLongLines={true}
-                  lineNumberStyle={{
-                    fontWeight: "bold",
-                    borderRight: "1px solid #ccc",
-                    marginRight: "1rem",
-                  }}
                 >
                   {fragmentData}
                 </SyntaxHighlighter>
@@ -242,12 +245,6 @@ function BigCard() {
                   language="markdown"
                   style={stackoverflowDark}
                   wrapLongLines={true}
-                  showLineNumbers={true}
-                  lineNumberStyle={{
-                    fontWeight: "bold",
-                    borderRight: "1px solid #ccc",
-                    marginRight: "1rem",
-                  }}
                 >
                   {fragmentData}
                 </SyntaxHighlighter>
@@ -257,15 +254,7 @@ function BigCard() {
                 <SyntaxHighlighter
                   language="html"
                   style={stackoverflowDark}
-                  // customStyle={{ width: "100%" }}
                   wrapLongLines={true}
-                  // useInlineStyles={false}
-                  showLineNumbers={true}
-                  lineNumberStyle={{
-                    fontWeight: "bold",
-                    borderRight: "1px solid #ccc",
-                    marginRight: "1rem",
-                  }}
                 >
                   {fragmentData}
                 </SyntaxHighlighter>
@@ -276,12 +265,6 @@ function BigCard() {
                   language="json"
                   style={stackoverflowDark}
                   wrapLongLines={true}
-                  // showLineNumbers={true}
-                  lineNumberStyle={{
-                    fontWeight: "bold",
-                    borderRight: "1px solid #ccc",
-                    marginRight: "1rem",
-                  }}
                 >
                   {fragmentData}
                 </SyntaxHighlighter>
@@ -293,7 +276,7 @@ function BigCard() {
               fragmentMimeType === "image/gif" ? (
                 <div className="fragment__data__container__image">
                   <img
-                    src={`data:image/png;base64,${fragmentData}`}
+                    src={`data:${fragmentMimeType};base64,${fragmentData}`}
                     width="auto"
                   />
                 </div>
