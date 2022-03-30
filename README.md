@@ -1,11 +1,11 @@
 <h1 align="center">
-  <a href="https://github.com/iorgadev/fragments"><img src="https://user-images.githubusercontent.com/2624432/149847016-ee302066-a4fa-4e3b-a0e8-87225b0eb474.png" alt="Fragments-UI" width="192"></a>
+  <a href="https://github.com/iorgadev/fragments-ui-next"><img src="https://user-images.githubusercontent.com/2624432/149847016-ee302066-a4fa-4e3b-a0e8-87225b0eb474.png" alt="Fragments-UI" width="192"></a>
   <br>
-  Fragments-UI
+  Fragments-UI (NextJS)
   <br>
 </h1>
 
-<h4 align="center">A client web-app to connect and test the fragments microservice.</h4>
+<h4 align="center">A React NextJS web-app to connect and test the fragments microservice.</h4>
 
 <p align="center">
   <a href="https://github.com/iorgadev/fragments/blob/main/package.json">
