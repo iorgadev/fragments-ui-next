@@ -1,34 +1,69 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 align="center">
+  <a href="https://github.com/iorgadev/fragments"><img src="https://user-images.githubusercontent.com/2624432/149847016-ee302066-a4fa-4e3b-a0e8-87225b0eb474.png" alt="Fragments-UI" width="192"></a>
+  <br>
+  Fragments-UI
+  <br>
+</h1>
 
-## Getting Started
+<h4 align="center">A client web-app to connect and test the fragments microservice.</h4>
 
-First, run the development server:
+<p align="center">
+  <a href="https://github.com/iorgadev/fragments/blob/main/package.json">
+    <img src="https://img.shields.io/badge/Version:-0.0.1-green"
+         alt="Repo Version">
+  </a>
+</p>
+
+<p align="center" style="display:flex;flex-wrap:wrap;gap:20px;justify-content:center;white-space:nowrap;">
+  <a href="#key-features">📦 Features</a>
+  <a href="#how-to-use">▶️ How To Run</a> 
+  <a href="#credits">📑 Credits</a> 
+  <a href="#license">📜 License</a>
+</p>
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/2624432/160914370-8d87a309-b6d0-4b6b-9cc4-c135c83f7ca1.gif" alt="fragments screenshot" />
+</p>
+
+<hr/>
+
+## 📦 Features
+
+- Connect and test fragments microservice
+
+## ▶️ How To Run
+
+To clone and run the Fragments-UI, you'll need [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/download/), and follow the installation steps from [Fragments](https://github.com/iorgadev/fragments). From your command line:
 
 ```bash
-npm run dev
-# or
-yarn dev
+# Clone the fragments-ui repository
+$ git clone https://github.com/iorgadev/fragments-ui-next
+
+# Go into the repository folder
+$ cd fragments-ui-next
+
+# Install dependencies
+$ npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Starting Web App:
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```bash
+# Run the fragments microservice in a separate process
+# and for fragments-ui-next, run it like so:
+$ npm run dev
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Then you can open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Learn More
+## 📑 Credits
 
-To learn more about Next.js, take a look at the following resources:
+This repo uses the following open source packages:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [NextJS](https://nextjs.org/)
+- [AWS-Amplify](https://aws.amazon.com/amplify/)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## 📜 License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Unlicensed
