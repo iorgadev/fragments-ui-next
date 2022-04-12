@@ -10,10 +10,9 @@ import { filterTypesArray } from "@/components/Fragment/FilterType";
 import SearchFilters from "@/components/Fragments/SearchFilters";
 import FooterStats from "./Fragments/FooterStats";
 import GridListContainer from "./Fragments/GridListContainer";
-
 import CreateNew from "@/components/Fragments/CreateNew";
 
-function Fragments() {
+function Fragments({ handleLogout }) {
   const [user] = useAtom(userAtom);
   const [fragments, setFragments] = useAtom(userFragmentsAtom);
   const [loading, setLoading] = useState(false);
@@ -95,12 +94,6 @@ function Fragments() {
   };
 
   useEffect(() => {
-    // console.log(
-    //   "Fragments.jsx useEffect()[filter options]: ",
-    //   searchString,
-    //   sortDirection,
-    //   sortBy
-    // );
     filterFragments();
   }, [searchString, sortDirection, sortBy]);
 
@@ -109,7 +102,7 @@ function Fragments() {
   }, []);
 
   // // Set to Loading if user is not loaded yet
-  // if (!user || !user.username) return <div>loading...</div>;
+  if (!user || !user.username) return <div>loading...</div>;
 
   // Display component if user is loaded
   return (
@@ -135,11 +128,14 @@ function Fragments() {
           {/* <div className="flex items-center justify-between w-full"> */}
           <div className="flex items-center flex-none space-x-2">
             <UserIcon className="w-6 h-6 p-1 text-teal-200 bg-teal-700 rounded-md" />
-            <span className="text-sm font-bold text-teal-200 uppercase">
+            <span className="text-sm font-bold text-orange-400 uppercase">
               {user.username}
             </span>
           </div>
-          <span className="text-xs uppercase text-neutral-400 font-semibold bg-neutral-900 py-0.5 px-1 rounded-md flex-none">
+          <span
+            className="text-xs uppercase text-neutral-400 font-semibold bg-neutral-900 py-0.5 px-1 rounded-md flex-none cursor-pointer hover:bg-neutral-200 hover:text-neutral-900"
+            onClick={handleLogout}
+          >
             logout
           </span>
           {/* </div> */}
