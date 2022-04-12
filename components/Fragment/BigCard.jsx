@@ -2,32 +2,15 @@ import { useState, useEffect } from "react";
 import { useAtom } from "jotai";
 import { userAtom } from "@/pages/_app";
 import { selectedFragmentAtom } from "@/components/Fragment/InfoIconBig";
-import {
-  getValidConversionTypes,
-  getMimeTypeExtension,
-  getExtensionMimeType,
-  backgroundColors,
-} from "@/utils/fragmentTypes";
+import { getExtensionMimeType } from "@/utils/fragmentTypes";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { stackoverflowDark } from "react-syntax-highlighter/dist/cjs/styles/hljs";
-import {
-  EyeIcon,
-  XIcon,
-  PencilAltIcon,
-  TrashIcon,
-  FingerPrintIcon,
-  ClockIcon,
-  DocumentIcon,
-  ArrowsExpandIcon,
-  ColorSwatchIcon,
-  ArrowSmRightIcon,
-  XCircleIcon,
-} from "@heroicons/react/solid";
+
 import Loading from "@/components/Loading";
-import Stat from "./Stat";
-import { humanFileSize, humanDate } from "@/utils/fragmentUtils";
 import Edit from "./Edit";
 import Delete from "./Delete";
+import Stats from "./Stats";
+import Actions from "./Actions";
 
 function BigCard() {
   const [user] = useAtom(userAtom);
@@ -92,10 +75,6 @@ function BigCard() {
   }, [conversionExtension]);
 
   useEffect(() => {
-    console.log("Fragment Type: ", fragmentMimeType);
-  }, [fragmentMimeType]);
-
-  useEffect(() => {
     if (!selectedFragment) return;
     fetchFragmentData(selectedFragment);
   }, [selectedFragment]);
@@ -108,161 +87,36 @@ function BigCard() {
           e.stopPropagation();
         }}
       >
-        {/* Stats */}
-        <div className="fragment__stats">
-          <Stat
-            icon={<FingerPrintIcon />}
-            label="Fragment ID"
-            value={selectedFragment.id}
-          />
-
-          <Stat
-            icon={<ClockIcon />}
-            label="Created"
-            value={humanDate(selectedFragment.created)}
-          />
-
-          <Stat
-            icon={<PencilAltIcon />}
-            label="Modified"
-            value={humanDate(selectedFragment.updated)}
-          />
-
-          <Stat
-            icon={<DocumentIcon />}
-            label={
-              <>
-                <span>Type</span>
-                {conversionExtension ? (
-                  <span className="ml-2 text-orange-300">(Converted)</span>
-                ) : (
-                  ``
-                )}
-              </>
-            }
-            value={
-              conversionExtension ? (
-                <>
-                  <div className="flex items-center space-x-2">
-                    <span>{selectedFragment.type}</span>
-                    <div className="flex items-center text-xs text-orange-200">
-                      <ArrowSmRightIcon className="w-4 h-4" />
-                    </div>
-
-                    <span>.{conversionExtension}</span>
-                    <XCircleIcon
-                      className="w-5 h-5 text-teal-900 bg-teal-500 rounded-full cursor-pointer"
-                      onClick={() => {
-                        setAction("");
-                        setConversionExtension((prev) => "");
-                      }}
-                    />
-                  </div>
-                </>
-              ) : (
-                <span className="h-7">{selectedFragment.type}</span>
-              )
-            }
-          />
-
-          <Stat
-            icon={<ArrowsExpandIcon />}
-            label="Size"
-            value={humanFileSize(selectedFragment.size)}
-          />
-
-          <Stat
-            icon={<ColorSwatchIcon />}
-            label="Conversions"
-            value={getValidConversionTypes(selectedFragment.type).map(
-              (type, i) => {
-                const mainType = type.split("/")[0];
-                const subType = type.split("/")[1];
-
-                return (
-                  <div
-                    key={i}
-                    className="conversion"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setAction("");
-                      setConversionExtension(getMimeTypeExtension(type));
-                    }}
-                  >
-                    <div className="conversion__item">
-                      <span
-                        className="p-1 font-semibold uppercase rounded-sm"
-                        style={{ backgroundColor: backgroundColors[type] }}
-                      >
-                        {mainType}
-                      </span>
-                      <span className="uppercase">{subType}</span>
-                    </div>
-                    <EyeIcon className="eye" />
-                  </div>
-                );
-              }
-            )}
-          />
-        </div>
+        {/* Fragment Side Panel Stats */}
+        <Stats
+          setAction={setAction}
+          conversionExtension={conversionExtension}
+          setConversionExtension={setConversionExtension}
+          selectedFragment={selectedFragment}
+        />
 
         {/* Fragment Data + Actions */}
         <div className="fragment__data">
-          <div className="actions">
-            <div className="icon" onClick={(e) => handleCloseFragmentData(e)}>
-              <XIcon className="close" />
-            </div>
-
-            <div className="icon" onClick={() => setAction((prev) => "")}>
-              <EyeIcon className={action === "" ? `active` : ``} />
-            </div>
-
-            <div className="icon" onClick={() => setAction((prev) => "edit")}>
-              <PencilAltIcon className={action === "edit" ? `active` : ``} />
-            </div>
-
-            <div className="icon" onClick={() => setAction((prev) => "delete")}>
-              <TrashIcon className={action === "delete" ? `active` : ``} />
-            </div>
-          </div>
+          <Actions
+            handleCloseFragmentData={handleCloseFragmentData}
+            action={action}
+            setAction={setAction}
+          />
 
           {loading ? (
             <Loading />
           ) : action === "" ? (
             <div className="fragment__data__container">
-              {fragmentMimeType === "text/plain" ? (
+              {fragmentMimeType === "application/json" ||
+              fragmentMimeType === "text/plain" ||
+              fragmentMimeType === "text/markdown" ||
+              fragmentMimeType === "text/html" ? (
                 <SyntaxHighlighter
-                  language="text"
-                  style={stackoverflowDark}
-                  wrapLongLines={true}
-                >
-                  {fragmentData}
-                </SyntaxHighlighter>
-              ) : null}
-
-              {fragmentMimeType === "text/markdown" ? (
-                <SyntaxHighlighter
-                  language="markdown"
-                  style={stackoverflowDark}
-                  wrapLongLines={true}
-                >
-                  {fragmentData}
-                </SyntaxHighlighter>
-              ) : null}
-
-              {fragmentMimeType === "text/html" ? (
-                <SyntaxHighlighter
-                  language="html"
-                  style={stackoverflowDark}
-                  wrapLongLines={true}
-                >
-                  {fragmentData}
-                </SyntaxHighlighter>
-              ) : null}
-
-              {fragmentMimeType === "application/json" ? (
-                <SyntaxHighlighter
-                  language="json"
+                  language={
+                    fragmentMimeType.split("/")[1] === "plain"
+                      ? "text"
+                      : fragmentMimeType.split("/")[1]
+                  }
                   style={stackoverflowDark}
                   wrapLongLines={true}
                 >
