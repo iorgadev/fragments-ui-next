@@ -19,18 +19,19 @@ import {
   XCircleIcon,
   ViewGridIcon,
   DocumentIcon,
+  CloudUploadIcon,
 } from "@heroicons/react/solid";
 
 function CreateNew({ getUserFragments }) {
   const [user] = useAtom(userAtom);
   const [files, setFiles] = useState([]);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
   const [dropError, setDropError] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [progress, setProgress] = useState(0);
   const [filesDropped, setFilesDropped] = useState(false);
   const droppedFilesRef = useRef();
   const [selectedLink, setSelectedLink] = useAtom(selectedLinkAtom);
+  const [lastCreated, setLastCreated] = useState(true);
 
   const dragOver = (e) => {
     e.preventDefault();
@@ -58,11 +59,6 @@ function CreateNew({ getUserFragments }) {
               "Content-Type": getExtensionMimeType(getFileType(file.name)),
               Authorization: `Bearer ${user.signInUserSession.idToken.jwtToken}`,
             },
-            // onUploadProgress: (progressEvent) => {
-            //   setProgress(
-            //     Math.round((progressEvent.loaded * 100) / progressEvent.total)
-            //   );
-            // },
             body: file,
           }
         );
@@ -71,7 +67,10 @@ function CreateNew({ getUserFragments }) {
       // scroll to the bottom of the droppedFilesRef div
       droppedFilesRef.current.scrollTop = droppedFilesRef.current.scrollHeight;
       if (last) {
-        getUserFragments();
+        setTimeout(() => {
+          setLastCreated((prev) => true);
+          getUserFragments();
+        }, 500);
       }
     }, delay);
   };
@@ -79,7 +78,7 @@ function CreateNew({ getUserFragments }) {
   const handleDrop = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log("handleDrop()");
+    setLastCreated(false);
     setFilesDropped((prev) => true);
     setIsDragging((prev) => false);
     // setLoading(true);
@@ -188,11 +187,28 @@ function CreateNew({ getUserFragments }) {
             })}
           </div>
           <div
-            className="flex items-center justify-center flex-none h-12 p-2 space-x-1 bg-teal-500 rounded-md cursor-pointer"
+            className={`flex items-center justify-center flex-none h-12 p-2 space-x-1 overflow-hidden ${
+              lastCreated ? `bg-teal-600` : `bg-neutral-500`
+            } rounded-md cursor-pointer ${
+              lastCreated ? `hover:bg-teal-500` : ``
+            }`}
             onClick={() => setSelectedLink("all")}
           >
-            <ViewGridIcon className="w-8 h-8 text-teal-300" />
-            <span className="text-xl text-teal-100">View New Fragments</span>
+            {lastCreated ? (
+              <>
+                <ViewGridIcon className="w-8 h-8 text-teal-300" />
+                <span className="text-xl text-teal-100 whitespace-nowrap">
+                  View New Fragments
+                </span>
+              </>
+            ) : (
+              <>
+                <CloudUploadIcon className="w-6 h-6 text-neutral-200 animate-pulse" />
+                <span className="text-xl text-neutral-100">
+                  Creating Fragments
+                </span>
+              </>
+            )}
           </div>
         </div>
       ) : null}
