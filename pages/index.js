@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { useAtom } from "jotai";
 import { userAtom } from "./_app";
 import Loading from "@/components/Loading";
@@ -7,20 +8,26 @@ import { Auth } from "aws-amplify";
 const Home = () => {
   const [user, setUser] = useAtom(userAtom);
 
-  if (!user || !user.username) {
+  const handleLogout = async () => {
+    await Auth.signOut();
+    setUser((prevUser) => null);
+    document.cookie = "";
+  };
+
+  if (!user && !user.username) {
     return <Loading />;
   }
 
-  const handleLogout = () => {
-    Auth.signOut();
-    document.cookie = "accessToken=;";
-    setUser((prevUser) => (prevUser = {}));
-  };
-
   return (
-    <div className="main">
-      <Fragments />
-    </div>
+    <>
+      <div className="main">
+        <Head>
+          <title>Fragments Microservice</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <Fragments handleLogout={handleLogout} />
+      </div>
+    </>
   );
 };
 
