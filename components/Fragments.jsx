@@ -72,12 +72,6 @@ function Fragments() {
       } else {
         filtered.sort((a, b) => a.size - b.size);
       }
-    } else if (sortBy === "name") {
-      if (sortDirection === "desc") {
-        filtered.sort((a, b) => b.name.localeCompare(a.name));
-      } else {
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
-      }
     } else if (sortBy === "type") {
       if (sortDirection === "desc") {
         filtered.sort((a, b) => b.type.localeCompare(a.type));
@@ -99,16 +93,6 @@ function Fragments() {
   const handleSortByOption = (option) => {
     setSortBy((prev) => option);
   };
-
-  // useEffect(() => {
-  //   if (!user || !user.signInUserSession?.idToken) return;
-  //   console.log("Fragments.jsx useEffect()[user]: ");
-  //   getUserFragments();
-  // }, [user]);
-
-  // useEffect(() => {
-  //   console.log("Fragments.jsx useEffect()[selectedFragment]: ", selectedLink);
-  // }, [selectedLink]);
 
   useEffect(() => {
     // console.log(
