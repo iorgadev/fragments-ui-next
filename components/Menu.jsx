@@ -1,13 +1,10 @@
 import React from "react";
 import { useAtom, atom } from "jotai";
-import { userAtom, userFragmentsAtom } from "@/pages/_app";
+import { userFragmentsAtom } from "@/pages/_app";
 import { fragmentColors } from "@/utils/fragmentTypes";
-
-import { ChevronDownIcon } from "@heroicons/react/solid";
 import {
   CubeIcon,
   ViewGridAddIcon,
-  UserIcon,
   RefreshIcon,
   DocumentTextIcon,
   CodeIcon,
@@ -17,7 +14,6 @@ import {
 export const selectedLinkAtom = atom("all");
 
 function Menu({ getUserFragments, loading }) {
-  const [user] = useAtom(userAtom);
   const [selectedLink, setSelectedLink] = useAtom(selectedLinkAtom);
   const [fragments] = useAtom(userFragmentsAtom);
 
