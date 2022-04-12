@@ -12,15 +12,14 @@ function MyApp({ Component, pageProps }) {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    if (user.username) {
-      // console.log("user.username", user.username);
+    if (user && user?.username) {
       setLoggedIn((prev) => true);
     } else {
       setLoggedIn((prev) => false);
     }
   }, [user]);
 
-  if (!user || !loggedIn) {
+  if (!user || user === {} || !loggedIn) {
     return <SignIn />;
   }
 
