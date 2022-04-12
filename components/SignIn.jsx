@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Head from "next/head";
 import { Amplify } from "@aws-amplify/core";
 import { Auth } from "@aws-amplify/auth";
 import awsExports from "../aws/awsExports";
@@ -89,6 +90,10 @@ const CustomSignIn = () => {
 
   return (
     <div className="login">
+      <Head>
+        <title>Fragments Microservice</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <form autoComplete="off">
         <div className="flex flex-col items-center justify-center">
           <img src="/images/logo.png" alt="logo" width="192" height="192" />
