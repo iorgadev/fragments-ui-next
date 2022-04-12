@@ -4,6 +4,7 @@
   @apply border-4 border-teal-800;
   // @apply rounded-xl;
   @apply overflow-hidden;
+  @apply bg-neutral-900;
 
   &__header {
     @apply bg-teal-800;
@@ -29,6 +30,7 @@
     @apply border-b border-teal-800 border-opacity-30;
 
     &__container {
+      @apply w-min;
     }
     &__input {
       @apply flex items-center space-x-2;
@@ -36,6 +38,7 @@
         @apply w-5 h-5;
       }
       & > input {
+        @apply w-48;
         @apply text-teal-200 bg-neutral-800;
         @apply border-2 border-neutral-700;
         @apply px-3 py-1;
