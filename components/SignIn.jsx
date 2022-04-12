@@ -5,6 +5,9 @@ import awsExports from "../aws/awsExports";
 
 import { useAtom } from "jotai";
 import { userAtom } from "../pages/_app";
+import Loading from "./Loading";
+
+import { CubeTransparentIcon } from "@heroicons/react/solid";
 
 Amplify.configure({
   Auth: awsExports,
@@ -12,6 +15,9 @@ Amplify.configure({
 
 const CustomSignIn = () => {
   const [user, setUser] = useAtom(userAtom);
+  const [loading, setLoading] = useState(false);
+  const [activeInput, setActiveInput] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [formData, setFormData] = useState({
     username: "",
@@ -30,30 +36,36 @@ const CustomSignIn = () => {
 
   const signInClick = async () => {
     try {
+      setErrorMessage("");
+      setLoading((prev) => true);
       const userResponse = await Auth.signIn(
         formData.username,
         formData.password
       );
+      setLoading((prev) => false);
       if (userResponse) {
         document.cookie = `accessToken=${userResponse.signInUserSession.idToken.jwtToken};max-age=604800;`;
         setUser((prevUser) => (prevUser = userResponse));
       }
     } catch (error) {
-      console.log(error.message);
+      setLoading((prev) => false);
+      setErrorMessage(error.message);
     }
   };
 
   const getUser = async () => {
     try {
+      setLoading((prev) => true);
       const userResponse = await Auth.currentAuthenticatedUser();
       if (userResponse) {
         document.cookie = `accessToken=${userResponse.signInUserSession.idToken.jwtToken};max-age=604800;`;
         setUser((prevUser) => (prevUser = userResponse));
         return userResponse;
       }
+      setLoading((prev) => false);
       setUser((prevUser) => (prevUser = null));
     } catch (error) {
-      console.log(error.message);
+      setLoading((prev) => false);
       return false;
     }
   };
@@ -63,44 +75,93 @@ const CustomSignIn = () => {
       /(?:(?:^|.*;\s*)accessToken\s*\=\s*([^;]*).*$)|^.*$/,
       "$1"
     );
-    // console.log("accessToken: ", accessToken);
     let userResponse = getUser();
+    setLoading((prev) => false);
     if (accessToken.length > 0 && userResponse) {
-      console.log("getUser(): ", user);
     } else {
-      console.log("User needs to login.");
-      setUser({});
+      setUser(null);
     }
   }, []);
 
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
-    <div>
-      <form>
-        <div>
-          <label htmlFor="username"> Username</label>
+    <div className="login">
+      <form autoComplete="off">
+        <div className="flex flex-col items-center justify-center">
+          <img src="/images/logo.png" alt="logo" width="192" height="192" />
+          <h1 className="text-4xl font-black text-teal-500 uppercase">
+            Fragments
+          </h1>
+        </div>
+
+        <div className="flex items-center justify-center pb-10 text-xs">
+          <span className="text-xs text-neutral-400">
+            Don&apos;t have an account?
+          </span>
+          <span
+            onClick={() => Auth.federatedSignIn()}
+            className="text-xs underline cursor-pointer text-neutral-200 underline-offset-2 hover:text-teal-200"
+          >
+            Register here.
+          </span>
+        </div>
+
+        <div className="relative flex items-center">
           <input
             data-prop={"username"}
             onChange={handleInputChange}
             type="text"
-            placeholder="Username"
+            autoComplete="off"
+            onFocus={() => setActiveInput((prev) => "username")}
+            onBlur={() => setActiveInput(null)}
           />
+          <span
+            className={`input-placeholder ${
+              activeInput === `username` || formData.username.length > 0
+                ? `active`
+                : ``
+            }`}
+          >
+            USERNAME
+          </span>
         </div>
-        <div>
-          <label htmlFor="password">Password</label>
+
+        <div className="relative flex items-center">
           <input
             data-prop={"password"}
             onChange={handleInputChange}
             type="password"
-            placeholder="******************"
+            autoComplete="off"
+            onFocus={() => setActiveInput((prev) => "password")}
+            onBlur={() => setActiveInput(null)}
           />
+          <span
+            className={`input-placeholder ${
+              activeInput === `password` || formData.password.length > 0
+                ? `active`
+                : ``
+            }`}
+          >
+            PASSWORD
+          </span>
         </div>
+
         <div>
-          <button type="button" onClick={() => signInClick()}>
-            Login
+          <button
+            type="button"
+            onClick={() => signInClick()}
+            className="login-btn"
+          >
+            <CubeTransparentIcon className="w-7 h-7 relative top-0.5" />
+            <span>Login</span>
           </button>
-          <p>
-            <a onClick={() => Auth.federatedSignIn()}> Create account</a>
-          </p>
+        </div>
+
+        <div className="h-8 text-center text-red-600">
+          <span>{errorMessage.length > 0 ? errorMessage : ""}</span>
         </div>
       </form>
     </div>
