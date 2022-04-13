@@ -3,9 +3,6 @@
   "private": true,
   "version": "0.0.1",
   "description": "Fragments UI testing web app",
-  "engines": {
-    "node": ">=16"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/iorgadev/fragments-ui.git"
