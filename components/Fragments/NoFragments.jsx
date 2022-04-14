@@ -5,8 +5,22 @@ import { selectedLinkAtom } from "@/components/Menu";
 
 function NoFragments() {
   const [selectedLink, setSelectedLink] = useAtom(selectedLinkAtom);
+  const [animate, setAnimate] = React.useState(false);
+
+  const handleDragEnter = () => {
+    setAnimate(true);
+    setTimeout(() => {
+      setSelectedLink("create");
+    }, 300);
+  };
+
   return (
-    <div className="flex flex-col items-center justify-start w-full h-full pt-10 border-4 border-transparent">
+    <div
+      onDragEnter={handleDragEnter}
+      className={`flex flex-col items-center justify-start w-full h-full pt-10 border-4 border-transparent transform transition-all duration-300 translate-x-0 ${
+        animate ? `-translate-x-full` : ``
+      }`}
+    >
       <Image
         src="/images/not-found.png"
         alt="No Fragments"
@@ -28,20 +42,6 @@ function NoFragments() {
         </span>{" "}
         to create your first Fragment.
       </span>
-      {/* <div className="flex flex-col p-3 mt-3 space-y-2 bg-teal-900 rounded-md bg-opacity-30">
-        <span className="text-xs font-semibold text-teal-300 uppercase">
-          Valid Fragment Types:
-        </span>
-        <div className="flex flex-wrap items-center justify-center space-x-2">
-          {getAllExtensions().map((type, i) => {
-            return (
-              <span key={i} className="px-1 py-0.5 bg-neutral-900 rounded-sm">
-                .{type}
-              </span>
-            );
-          })}
-        </div>
-      </div> */}
     </div>
   );
 }
