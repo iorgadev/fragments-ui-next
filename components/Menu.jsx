@@ -119,9 +119,7 @@ function Menu({ getUserFragments, loading }) {
             <span>webp</span>
           </li>
           <li>
-            <span
-              className={`file ${fragmentColors["image/gif"]}  bg-neutral-800`}
-            >
+            <span className={`file ${fragmentColors["image/gif"]} bg-lime-600`}>
               gif
             </span>
             <span>gif</span>

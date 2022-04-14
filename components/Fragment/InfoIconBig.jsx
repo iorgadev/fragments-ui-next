@@ -12,7 +12,7 @@ const fragmentColors = {
   "image/png": "text-green-400",
   "image/jpeg": "text-blue-400",
   "image/webp": "text-red-400",
-  "image/gif": "text-gray-400",
+  "image/gif": "text-lime-400",
 };
 import { atom } from "jotai";
 export const selectedFragmentAtom = atom({});

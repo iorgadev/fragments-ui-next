@@ -60,7 +60,7 @@ const fragmentColors = {
   "image/png": "text-green-400",
   "image/jpeg": "text-blue-400",
   "image/webp": "text-red-400",
-  "image/gif": "text-gray-400",
+  "image/gif": "text-brown-400",
 };
 const backgroundColors = {
   "text/plain": "#1e293b",
@@ -70,7 +70,7 @@ const backgroundColors = {
   "image/png": "#166534",
   "image/jpeg": "#1e40af",
   "image/webp": "#991b1b",
-  "image/gif": "#262626",
+  "image/gif": "#ff1fdc",
 };
 
 /**
