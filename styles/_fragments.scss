@@ -70,7 +70,7 @@
         @apply flex items-center justify-between;
         @apply text-teal-500 text-sm cursor-pointer;
         @apply bg-neutral-800 border-2 border-neutral-700;
-        @apply px-3 py-0.5;
+        @apply py-[3px] px-3;
         // @apply border border-green-500;
         &.open {
           @apply border-b-transparent;

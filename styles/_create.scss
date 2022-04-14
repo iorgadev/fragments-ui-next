@@ -4,6 +4,8 @@
   --scrollbar-thumb: #29e6cd;
   --scrollbar-track: #242424;
 
+  animation: fadein 0.3s;
+
   &__container {
     @apply flex-none flex flex-col items-center justify-start w-full h-full pt-10 bg-teal-900 border-4 border-teal-700 border-dashed bg-opacity-10;
     @apply transition-all duration-500;
@@ -42,5 +44,14 @@
     @apply px-1 py-0.5 bg-neutral-900 rounded-sm;
     @apply h-full;
     @apply flex flex-col items-center justify-center;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
