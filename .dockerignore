@@ -1,0 +1,14 @@
+.git/
+.gitignore
+
+# build folder
+.next/    
+
+# docker files            
+.dockerignore
+Dockerfile
+
+# node modules folder
+node_modules/     
+
+.env.local
