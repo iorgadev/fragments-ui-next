@@ -57,6 +57,28 @@ $ npm run dev
 
 Then you can open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Required Environment Variables
+
+```r
+# fragments microservice API URL
+NEXT_PUBLIC_API_URL="http://localhost:8080"
+
+# AWS Amazon Cognito User Pool ID (use your User Pool ID)
+NEXT_PUBLIC_AWS_COGNITO_POOL_ID="xxx"
+
+# AWS Amazon Cognito Client App ID (use your Client App ID)
+NEXT_PUBLIC_AWS_COGNITO_CLIENT_ID="xxx"
+
+# AWS Amazon Cognito Host UI domain (use your domain)
+NEXT_PUBLIC_AWS_COGNITO_HOSTED_UI_DOMAIN="xxx"
+
+# OAuth Sign-In Redirect URL (use the port for your fragments-ui web app)
+NEXT_PUBLIC_OAUTH_SIGN_IN_REDIRECT_URL="http://localhost:3000"
+
+# OAuth Sign-Out Redirect URL (use the port for your fragments-ui web app)
+NEXT_PUBLIC_OAUTH_SIGN_OUT_REDIRECT_URL="http://localhost:3000"
+```
+
 ## 📑 Credits
 
 This repo uses the following open source packages:
